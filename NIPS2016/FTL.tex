@@ -1,0 +1,957 @@
+\documentclass[english]{article}
+
+% if you need to pass options to natbib, use, e.g.:
+%\PassOptionsToPackage{numbers, compress}{natbib}
+% before loading nips_2016
+%
+% to avoid loading the natbib package, add option nonatbib:
+% \usepackage[nonatbib]{nips_2016}
+
+%\usepackage{nips_2016}
+
+% to compile a camera-ready version, add the [final] option, e.g.:
+\usepackage[final]{nips_2016}
+
+\usepackage{color}
+\usepackage[usenames,dvipsnames]{xcolor}
+\usepackage[backgroundcolor = White,textwidth=\marginparwidth]{todonotes}
+%\usepackage[disable,backgroundcolor = White,textwidth=\marginparwidth]{todonotes}
+\newcommand{\todoc}[2][]{\todo[color=Apricot!20,size=\tiny,#1]{C: #2}}
+\newcommand{\todot}[2][]{\todo[color=Cerulean!20,size=\tiny,#1]{T: #2}}
+\newcommand{\todoa}[2][]{\todo[color=Purple!20,size=\tiny,#1]{A: #2}}
+\newcommand{\todor}[2][]{\todo[color=Blue!10,size=\tiny,#1]{R: #2}}
+
+\usepackage{comment}
+\usepackage{babel}
+\usepackage{natbib}
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{hyperref}       % hyperlinks
+\usepackage{url}            % simple URL typesetting
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{amsfonts}       % blackboard math symbols
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
+\usepackage{microtype}      % microtypography
+\usepackage{enumerate}
+\usepackage{algorithm}
+\usepackage{algcompatible}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{cancel}
+\usepackage{epstopdf}
+\usepackage{esvect}
+\usepackage{graphicx,wrapfig,lipsum,framed}
+
+\newcommand{\cA}{\mathcal{A}}
+\newcommand{\cB}{\mathcal{B}}
+\newcommand{\cE}{\mathcal{E}}
+\newcommand{\cG}{\mathcal{G}}
+\newcommand{\cX}{\mathcal{X}}
+\newcommand{\cY}{\mathcal{Y}}
+\newcommand{\cZ}{\mathcal{Z}}
+\newcommand{\cW}{\mathcal{W}}
+\newcommand{\cM}{\mathcal{M}}
+\newcommand{\cH}{\mathcal{H}}
+\newcommand{\cF}{\mathcal{F}}
+\newcommand{\cL}{\mathcal{L}}
+\newcommand{\tcF}{\widetilde{\cF}}
+\newcommand{\hP}{\hat{P}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Exp}[1]{\mathbb{E}\left[ #1 \right]} 
+\newcommand{\Expc}[2]{\mathbb{E}\left[ \left. #1 \right| #2 \right]} 
+\newcommand{\ind}{\mathbb{I}}
+\newcommand{\one}[1]{\ind\left(#1\right)}
+\newcommand{\seto}[1]{\left\{#1\right\}}
+\newcommand{\real}{\mathbb{R}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\bS}{\mathbb{S}}
+\newcommand{\inpro}[2]{\langle #1, #2\rangle}
+\newcommand{\inprol}[2]{\left\langle #1, #2\right\rangle}
+\newcommand{\ip}[1]{\langle#1\rangle}
+\newcommand{\inner}[1]{\left\langle#1\right\rangle}
+\newcommand{\KL}{\operatorname{KL}}
+\newcommand{\set}[2]{\left\{#1 \,\vert\, #2 \right\}}
+\newcommand{\lt}{\ell_t}
+\newcommand{\ttheta}{\tilde{\theta}}
+\newcommand{\wtheta}{\widehat{\theta}}
+\newcommand{\htheta}{\hat{\theta}}
+\newcommand{\what}[1]{\widehat{#1}}
+\newcommand{\tw}{\tilde{w}}
+\newcommand{\norm}[1]{\left\| #1 \right\|}
+\newcommand{\bd}{\mathrm{bd}}
+\newcommand{\inangle}[2]{(#1,#2)}
+\newcommand\numberthis{\addtocounter{equation}{1}\tag{\theequation}}
+\newcommand{\uD}{\overline{D}}
+\newcommand{\lD}{\underline{D}}
+\newcommand{\ra}{\rightarrow}
+\newcommand{\eg}{\text{e.g. }}
+\newcommand{\Prob}[1]{\mathbb{P}\left[#1\right]}
+\newcommand{\Probc}[2]{\mathbb{P}\left[\left. #1 \, \right| #2\right]}
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\argmax}{argmax}
+\DeclareMathOperator{\dom}{dom}
+\DeclareMathOperator{\epi}{epi}
+\usepackage[capitalize]{cleveref}
+
+\newtheorem{thm}{Theorem}[section]
+\newtheorem{lemma}[thm]{Lemma}
+\newtheorem{prop}[thm]{Proposition}
+\newtheorem{cor}[thm]{Corollary}
+%\newtheorem{comm}[thm]{Comment}
+\newtheorem{example}[thm]{Example}
+\newtheorem{remark}[thm]{Remark}
+
+
+
+\title{
+Following the Leader and
+Fast Rates in Linear Prediction:
+Curved Constraint Sets and Other Regularities
+}
+%: Exploiting the Curvature of the Constraint Set}
+
+% The \author macro works with any number of authors. There are two
+% commands used to separate the names and addresses of multiple
+% authors: \And and \AND.
+%
+% Using \And between authors leaves it to LaTeX to determine where to
+% break the lines. Using \AND forces a line break at that point. So,
+% if LaTeX puts 3 of 4 authors names on the first line, and the last
+% on the second line, try using \AND instead of \And before the third
+% author name.
+
+\author{
+ Ruitong Huang \\
+ Department of Computing Science\\
+ University of Alberta, AB, Canada \\
+ %Edmonton, AB T6G2E8, Canada\\
+ \texttt{ruitong@ualberta.ca}  \vspace{-0.04cm}
+ \And 
+ Tor Lattimore \\
+ School of Informatics and Computing \\
+ Indiana University, IN, USA \\
+% Bloomington, IN 47408, USA\\
+ \texttt{tor.lattimore@gmail.com} \vspace{-0.04cm}
+ \And
+ Andr\'as Gy\"orgy \\
+ Dept. of Electrical \& Electronic Engineering\\ 
+ Imperial College London, UK\\ 
+% London SW7 2BT, UK \\
+ \texttt{a.gyorgy@imperial.ac.uk} 
+ \And 
+ Csaba Szepesv\'ari\\
+ Department of Computing Science\\
+ University of Alberta, AB, Canada \\
+% Edmonton, AB T6G2E8, Canada\\
+ \texttt{szepesva@ualberta.ca}
+  %% examples of more authors
+  %% \And
+  %% Coauthor \\
+  %% Affiliation \\
+  %% Address \\
+  %% \texttt{email} \\
+  %% \AND
+  %% Coauthor \\
+  %% Affiliation \\
+  %% Address \\
+  %% \texttt{email} \\
+  %% \And
+  %% Coauthor \\
+  %% Affiliation \\
+  %% Address \\
+  %% \texttt{email} \\
+  %% \And
+  %% Coauthor \\
+  %% Affiliation \\
+  %% Address \\
+  %% \texttt{email} \\
+}
+
+\begin{document}
+% \nipsfinalcopy is no longer used
+
+\maketitle
+
+\begin{abstract}
+The follow the leader (FTL) algorithm, perhaps the simplest of all online learning algorithms,
+is known to perform well when the loss functions it is used on are positively curved.
+In this paper we ask whether there are other ``lucky'' settings when FTL achieves sublinear, ``small'' regret.
+In particular, we study the fundamental problem of linear prediction over a non-empty convex, compact domain.
+Amongst other results, we prove that the curvature of  the boundary of the domain can act as if the losses
+were curved: In this case, we prove that as long as 
+the mean of the loss vectors have positive lengths bounded away from zero, 
+FTL enjoys a logarithmic growth rate of regret, while, e.g., for polytope domains and stochastic data it enjoys
+finite expected regret. 
+Building on a previously known meta-algorithm, we also get
+ an algorithm that simultaneously enjoys the worst-case guarantees and the bound available for FTL.
+%while it approaches the smaller regret of FTL when the data is ``easy''.
+\end{abstract}
+
+\section{Introduction}
+Learning theory traditionally has been studied in a statistical framework, discussed at length, for example, by \citet{SSS14:book}.
+The issue with this approach is that the analysis of the performance of learning methods seems to critically depend
+on whether the data generating mechanism satisfies some probabilistic assumptions. 
+Realizing that these assumptions are not necessarily critical, much work has been devoted recently to 
+studying learning algorithms in the so-called online learning framework \citep{CBLu06:book}. %SSS14:book}.
+The online learning framework makes minimal assumptions about the data generating mechanism,
+while allowing one to replicate results of the statistical framework through online-to-batch conversions
+\citep{CBCoG04:OnlineToBatch}.
+By following a minimax approach, however, results proven in the online learning setting, at least initially, led to rather
+conservative results and algorithm designs, failing to capture how more regular, ``easier'' data, may give rise to
+faster learning speed. This is problematic as it may suggest overly conservative learning strategies, missing
+opportunities to extract more information when the data is nicer. Also, it is hard to argue that data resulting from
+passive data collection, such as weather data, would ever be adversarially generated (though it is equally hard
+to defend that such data satisfies precise stochastic assumptions).
+Realizing this issue, during recent years much work has been devoted to understanding what regularities and how can lead to 
+faster learning speed.
+For example, much work has been devoted to showing that faster learning speed (smaller ``regret'') can be achieved
+in the online convex optimization setting when the loss functions are ``curved'', such 
+as when the loss functions are strongly convex or exp-concave, %and on how to adaptively exploit this property,
+or when the losses show small variations, or the best prediction in hindsight has a small total loss, and that these properties can be exploited in an adaptive manner  (e.g.,
+\citealt{MF92}, \citealt{FrSc97},
+\citealt{gaivoronski2000stochastic},
+\citealt{CBLu06:book},
+\citealt{hazan2007logarithmic},
+\citealt{bartlett2007adaptive},
+\citealt{kakade2009mind},
+\citealt{orabona2012beyond},
+\citealt{RakhlinS13},
+\citealt{vanerven2015fast},
+\citealt{foster2015adaptive}).
+%Huge literature on adaptive and fast rates, impossible to summarize here (and out of scope), but, e.g., 
+%\citet{orabona2012beyond,vanerven2015fast,foster2015adaptive} review and unify many previous approaches.
+
+In this paper we contribute to this growing literature by studying online linear prediction and the follow the leader (FTL) algorithm.
+Online linear prediction is arguably the simplest of all the learning settings, and lies at the heart of online
+convex optimization, while it also serves as an abstraction of core learning problems such as prediction with expert advice.
+FTL, the online analogue of empirical risk minimization of statistical learning, is the simplest learning strategy, one can think of.
+Although the linear setting of course removes the possibility of exploiting the curvature of losses, as we will see, there are
+multiple ways online learning problems can present data that allows for small regret, even for FTL.
+As is it well known, in the worst case,
+FTL suffers a linear regret (e.g., Example 2.2 of \citet{SS12:Book}). 
+However, for ``curved'' losses (e.g., exp-concave losses), FTL was shown to achieve small (logarithmic) regret
+(see, e.g., \citet{MF92,CBLu06:book,gaivoronski2000stochastic,hazan2007logarithmic}).
+
+In this paper we take a thorough look at FTL in the case when the losses are linear, 
+but the problem perhaps exhibits other regularities.
+The motivation comes from the simple observation that, for prediction over the simplex, when
+the loss vectors are selected independently of each other from a distribution with a bounded support with a
+nonzero mean, FTL quickly locks onto selecting the loss-minimizing vertex of the simplex, achieving finite expected regret.
+In this case, FTL is arguably an excellent algorithm.
+In fact, FTL is shown to be the minimax optimizer for the binary losses in the  stochastic expert setting in the paper of \citet{kotlowskiminimax}.
+Thus, we ask the question of whether there are other regularities that allow FTL 
+to achieve nontrivial performance guarantees.
+Our main result shows that when the decision set (or constraint set) has a sufficiently ``curved'' boundary and the linear loss is bounded away from $0$, FTL 
+is able to achieve logarithmic regret even in the adversarial setting, thus opening up a new
+way to prove fast rates based on not on the curvature of losses, but on that of the boundary of the constraint set and non-singularity of the linear loss.
+In a matching lower bound we show that this regret bound is essentially unimprovable.
+%As we will show in an essentially matching lower bound, this regret bound must increase with the inverse
+%of the norm of the mean of losses (i.e., small means makes the regret bound explode).
+We also show an alternate bound for polytope constraint sets, which allows us to prove that 
+(under certain technical conditions) for stochastic problems the expected regret of FTL will be finite.
+To finish, we use ($\cA$, $\cB$)-prod of \citet{sani2014exploiting} to design an algorithm 
+that adaptively interpolates between the worst case $O(\sqrt{n})$ regret and the smaller regret bounds,
+which we prove here for ``easy data.'' Simulation results on artificial data to illustrate the theory complement
+the theoretical findings, though due to lack of space these are presented only in the long version of the paper \citep{huang16long}. % appendix only.
+
+While we believe that we are the first to point out that the curvature of the constraint set $\cW$ can help in speeding up learning,
+this effect is known in convex optimization since at least the work of  \citet{LePo66},
+who showed that exponential rates are attainable for strongly convex constraint sets if the norm of the gradients of the objective function admit a uniform lower bound. \todoc{Longer version: This is their Theorem 6.1, part (5).}
+More recently, \citet{garber2014faster} %removes a restricting technical condition assumed by \citet{LePo66} and
+proved an $O(1/n^2)$ optimization error bound (with problem-dependent constants) for the Frank-Wolfe algorithm for strongly convex and smooth objectives and strongly convex constraint sets.
+The effect of the shape of the constraint set was also discussed by \citet{abbasi2010forced} who demonstrated $O(\sqrt{n})$ regret in the linear bandit setting.
+While these results at a high level are similar to ours, our proof technique is rather different than that used there.
+% that the curvature of the constraint set leads to faster convergence
+%in the Frank-Wolfe algorithm
+%for smooth, strongly convex functions, using Frank-Wolfe, $O(1/t^2)$ optimization error is attainable after $t$ iterations.
+  
+\todoc[inline]{
+Interpolating between stochastic and adversarial settings: \citet{bubeck2012best}.
+I think Rakhlin and Karthrik also write about this. What did they write? Cite them.}
+\todor[inline]{\citep{abernethy2008optimal} section 4.2 talks about lower bound for linear game with constraint sets being balls. \citep{abernethy2009stochastic} relates the regret to the flatness of $\Phi$ and the Bregman divergence. \citep{abernethy2014online} Bregman divergence again.}
+  
+\todoc[inline]{
+\citet{MF92}  considers the following assumption (dropping measurability and other technical requirements):
+Let $\ell: \cF \times \cW \to [0,\infty)$ be a fixed loss function.
+For a probability distribution $P$ over $\cF$, let $w^*(P) = \argmin_{w\in \cW} \int \ell(f,w) P(df)$.
+Further, for $\alpha\in [0,1]$, $f\in \cF$, let $P_{\alpha,x} = P+ \alpha( \delta_f - P)$, where $\delta_f$ is the Dirac measure that puts all the weight to $f$. (Note that $P_{\alpha,x}-P = \alpha (\delta_f-P)$.)
+Then, the assumption is that for some $L>0$ and for all $f\in \cF$,
+ $|\ell(f, b^*(P) ) - \ell( f, b^*(P_{\alpha,f}))| \le \alpha L$ (a form of a Lipschitz condition).
+Under this assumption they show that FTL achieves logarithmic regret.
+How does this assumption relate to our smoothness assumption?
+}
+\todor[inline]{More about stability. \citep{saha2012interplay}. Such stability is usually achieved by the strongly convexity of the loss function.}  
+ 
+
+%\vspace{-0.05cm}
+\section{Preliminaries, online learning and the follow the leader algorithm}
+\label{sec:notation}
+% \begin{wrapfigure}{r}{6cm}
+%	\vspace{-.5cm}
+%	\centering
+%	\begin{algorithmic}[1]
+%		\FOR{$t = 1 \text{ to } n$}
+%		\STATE Learner predicts $w_t\in \cW$;
+%		\STATE Environment picks $\ell_t\in \cL$;
+%		\STATE Learner suffers $\ell_t(w_t)$ and learns $\ell_t$.
+%		\ENDFOR
+%	\end{algorithmic}
+%	\caption{Online Learning} 
+%  	\label{fig:onlinelearning}
+%	\vspace{-.5cm}
+%\end{wrapfigure} 
+We consider the standard framework of online convex optimization, where a learner and an environment interact in a sequential manner in $n$ rounds: In round every round $t=1,\ldots,n$, first the learner predicts $w_t\in \cW$. Then the environment picks a loss function $\ell_t\in \cL$, and the learner suffers loss $\ell_t(w_t)$ and observes $\ell_t$. 
+%as shown in \cref{fig:onlinelearning}.
+%as follows \citep{Zin03}:
+Here, $\cW$ is a non-empty, compact \todoa{Changed to compact here, as we need it anyways for the linear losses} convex subset of $\real^d$ and
+ $\cL$ is a set of convex functions, mapping $\cW$ to the reals.
+ The elements of $\cL$ are called loss functions.
+The performance of the learner is measured in terms of its regret,
+\[
+R_n = \sum_{t=1}^n \lt(w_t) - \min_{w\in \cW}\sum_{t=1}^n \lt(w)\,.
+\]
+ 
+The simplest possible case, which will be the focus of this paper,
+is when the losses are linear, i.e., when $\lt(w) = \ip{f_t,w}$ for some $f_t\in \cF\subset \real^d$.
+\newcommand{\tlt}{\tilde{\ell}_t}
+In fact, the linear case is not only simple, but is also fundamental since the case of nonlinear loss functions can be reduced to it: Indeed, even if the losses are nonlinear, 
+defining $f_t \in \partial \lt(w_t)$ to be a subgradient%
+\footnote{
+We let $\partial g(x)$ denote the subdifferential of a convex function $g:\dom(g) \to \R$ at $x$,
+i.e., $\partial g(x) = \set{\theta\in \R^d}{g(x') \ge g(x) + \ip{\theta, x'-x} \,\, \forall x'\in \dom(g) }$,
+where $\dom(g)\subset \R^d$ is the domain of $g$.
+} 
+of $\lt$ at $w_t$ and  letting $\tlt(u) = \ip{f_t,u}$, by the definition of subgradients,
+$\lt(w_t)-\lt(u) \le \lt(w_t)-(\lt(w_t)+\ip{f_t,u-w_t}) = \tlt(w_t)-\tlt(u)$, hence for any $u\in \cW$,
+\[
+\sum_t \lt(w_t) - \sum_t \lt(u) \le \sum_t \tilde{\lt}(w_t) - \sum_t \tilde{\lt}(u)\,.
+\]
+In particular, if an algorithm keeps the regret small no matter how the linear losses are selected
+(even when allowing the environment to pick losses based on the choices of the learner), 
+the algorithm can also be used to keep the regret small in the nonlinear case. 
+%showing that, in this sense, the linear case is fundamental.
+Hence, in what follows we will study the linear case $\ell_t(w)=\ip{f_t,w}$ and, in particular, we will study the regret
+of the so-called ``Follow The Leader'' (FTL) learner, which, in round $t\ge 2$ 
+picks
+% $w_t$ such that $w_t$ minimizes the 
+%total loss $\sum_{i=1}^{t-1} \ell_i(w)$ accumulated so far, cf. \cref{fig:ftl}
+\begin{align*}
+w_t = \argmin_{w\in \cW} \sum_{i=1}^{t-1} \ell_i(w)\,.
+\end{align*}
+For the first round, $w_1\in \cW$ is picked in an arbitrary manner.
+When $\cW$ is compact, the optimal $w$ of $\min_{w\in\cW} \sum_{i=1}^{t-1}\inpro{w}{f_t}$ is attainable,
+which we will assume henceforth.
+If multiple minimizers exist, we simply fix one of them as $w_t$.
+We will also assume that $\cF$ is non-empty, compact and convex. \todoc{Why compact? Convex? How is this used?}\todoa{It is used with $\Phi$ and its Bregman divergence. Could be relaxed but this is the standard way.}
+\if0
+ \begin{wrapfigure}{R}{5cm}
+	\vspace{-.5cm}
+	\centering
+	\begin{algorithmic}
+		\STATE In round $t\ge 2$, predict:
+		\begin{align*}
+		w_t = \argmin_{w\in \cW} \sum_{i=1}^{t-1} \ell_i(w)\,.
+		\end{align*}
+		while in round one predict arbitrarily.
+	\end{algorithmic}
+	\caption{Follow the Leader (FTL)} 
+  	\label{fig:ftl}
+	\vspace{-.5cm}
+\end{wrapfigure} 
+\fi
+
+\subsection{Support functions}
+Let $\Theta_t = -\frac1t \sum_{i=1}^t f_i$ be the negative average of the first $t$ vectors
+in $(f_t)_{t=1}^n$, $f_t\in \cF$.
+For convenience, we define $\Theta_0 := 0$.
+Thus, for $t\ge 2$,
+\begin{align*}
+w_t =  \argmin_{w\in\cW} \sum_{i=1}^{t-1} \ip{ w, f_i } = \argmin_{w\in\cW} \ip{ w, -\Theta_{t-1} }
+= \argmax_{w\in \cW} \ip{w,\Theta_{t-1}}\,.
+\end{align*}
+Denote by $\Phi(\Theta) = \max_{w\in\cW} \langle w, \Theta\rangle$ the so-called \emph{support function} of $\cW$. 
+The support function, being the maximum of linear and hence convex functions, is itself convex.
+Further $\Phi$ is positive homogenous: for $a\ge 0$ and $\theta\in \R^d$, $\Phi(a \theta) = a\Phi(\theta)$.
+It follows then that the epigraph $\epi(\Phi) = \set{ (\theta,z)}{ z\ge \Phi(\theta), z\in \R, \theta\in \R^d }$ of $\Phi$ is a cone,
+since for any $(\theta,z)\in \epi(\Phi)$ and $a\ge 0$, 
+$az \ge a \Phi(\theta) = \Phi(a\theta)$, $(a\theta,az)\in \epi(\Phi)$ also holds.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+The differentiability of the support function is closely tied to whether in the FTL algorithm the choice of $w_t$ is
+uniquely determined:
+\begin{prop} 
+\label{prop:derivativePhi}
+Let $\cW\ne \emptyset$ be convex and closed.
+Fix $\Theta$ and let $\cZ:= \set{w\in \cW}{\inpro{w}{\Theta} =  \Phi(\Theta) }$.
+Then, $\partial \Phi(\Theta) = \cZ$ and, in particular,
+$\Phi(\Theta)$ is differentiable at $\Theta$ if and only if 
+$\max_{w\in\cW} \inpro{w}{\Theta}$ has a unique optimizer.
+In this case, $\nabla \Phi(\Theta) = \argmax_{w\in \cW} \ip{w,\Theta}$.
+\end{prop}
+The proposition follows from Danskin's theorem when $\cW$ is compact
+(e.g., Proposition B.25 of \citealt{bertsekas99nonlinear}), 
+but a simple
+direct argument can also be used to show that it also remains true even when $\cW$ is unbounded. \todor{Remove the footnote.}
+\footnote{
+The proofs not given in the main text can be found in the long version of the paper \citep{huang16long}. %appendix.
+} 
+By \cref{prop:derivativePhi},
+when $\Phi$ is differentiable at $\Theta_{t-1}$,
+$w_t = \nabla \Phi(\Theta_{t-1})$.
+%\todoa{This part is somewhat problematic, as $\phi(\Theta)$ is not defined for some $Theta$ if 
+
+\section{Non-stochastic analysis of FTL}
+\label{sec:FTL}
+We start by rewriting the regret of FTL in an equivalent form, which shows that we can expect FTL to enjoy a small
+regret when successive weight vectors move little. 
+A noteworthy feature of the next proposition is that rather than bounding the regret from above, it gives an equivalent
+expression for it. 
+\begin{prop}
+\label{prop:regretabel}
+The regret $R_n$ of FTL satisfies
+\begin{align*}
+R_n & =  \sum_{t=1}^n t\,\ip{ w_{t+1}-w_t,\Theta_t}  \,.
+\end{align*}
+\end{prop}
+The result is a direct corollary of Lemma 9 of \citet{McMahan10:Equiv}, which holds 
+for any sequence of losses, even in the lack of convexity.
+It is also a tightening of the well-known inequality $R_n \le \sum_{t=1}^n \ell_t(w_t)-\ell_t(w_{t+1})$,
+which again holds for arbitrary loss sequences (e.g., Lemma 2.1 of \citet{SS12:Book}).
+To keep the paper self-contained, we give an elegant, short direct proof, based on the summation by parts formula:
+\begin{proof}
+The summation by parts formula states that for any $u_1,v_1,\dots,u_{n+1},v_{n+1}$ reals,
+$
+\sum_{t=1}^n u_t\,(v_{t+1}-v_t) = (u_{t+1}v_{t+1}-u_1 v_1) - \sum_{t=1}^n (u_{t+1}-u_t)\,v_{t+1} 
+$.
+Applying this to the definition of regret
+with $u_t:=w_{t,\cdot}$ and $v_{t+1} := t\Theta_{t}$, we get
+%\begin{align*}
+$
+R_n 
+ = -\sum_{t=1}^n \ip{w_t,t\Theta_t - (t-1)\Theta_{t-1}} + \ip{w_{n+1},n\Theta_n}  
+ = - \left\{ 
+		\bcancel{\ip{w_{n+1},n\Theta_n}} - 0 - \sum_{t=1}^n \ip{w_{t+1}-w_t,t\Theta_t}  \right\} +
+		\bcancel{\ip{w_{n+1},n\Theta_n}}
+$.
+%end{align*}
+\end{proof}
+Our next proposition gives another formula that is equal to the regret.
+As opposed to the previous result, this formula is appealing as
+it is independent of $w_t$; but it directly connects the sequence $(\Theta_t)_t$ to the 
+geometric properties of $\cW$ through the support function $\Phi$.
+For this proposition we will momentarily assume that $\Phi$ is differentiable at $(\Theta_t)_{t\ge 1}$;
+a more general statement will follow later.
+%To state the proposition, recall that the Bregman divergence from $u$ to $v$ induced by a convex function $g$ 
+%which is differentiable at $u$ is $D_g(v,u) = g(v) - g(u) - \ip{\nabla g(u), v-u}$.
+%When $\Phi$ is differentiable at $\Theta_{t-1} (\neq0)$, $w_t = \nabla \Phi(\Theta_{t-1})$.
+
+
+%The next proposition shows that the regret of FTL is in fact tied to the smoothness of the function $\Phi$.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{prop} 
+\label{prop:R_nBregmanDivergence}
+If $\Phi$ is differentiable at $\Theta_1, \ldots, \Theta_n$,  %\todoc{There is an issue that $\Phi$ is not differentiable at $\Theta_0 = 0$.}
+\begin{align}
+\label{eq:regreteq}
+R_n = \sum_{t=1}^{n} t\,D_{\Phi}(\Theta_t,\Theta_{t-1})\,,
+\end{align}
+where $D_{\Phi}(\theta', \theta) = \Phi(\theta') - \Phi(\theta) - \ip{ \nabla\Phi(\theta), \theta' - \theta}$ is the Bregman divergence of $\Phi$
+and
+we use the convention that $\nabla\Phi(0) = w_1$.
+\end{prop}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{proof}
+Let $v = \argmax_{w\in\cW}\inpro{w}{\theta}$, 
+$v' = \argmax_{w\in \cW}\ip{w,\theta'}$.
+When $\Phi$ is differentiable at $\theta$,
+\begin{align}
+D_{\Phi}(\theta', \theta) & = \Phi(\theta') - \Phi(\theta) - \inpro{\nabla\Phi(\theta)}{\theta' \!- \theta} 
+  =  \inpro{v'}{\theta'} \!- \inpro{v}{\theta} -\inpro{v}{\theta' \!- \theta} = \inpro{v'\!-v}{\theta'}\,. 
+\label{eq:bregman}
+\end{align}
+Therefore, by \cref{prop:regretabel}, $R_n = \sum_{t=1}^{n} t\ip{ w_{t+1}-w_t,\Theta_t} = \sum_{t=1}^{n} t\,D_{\Phi}(\Theta_t,\Theta_{t-1})$.
+\end{proof}
+When $\Phi$ is non-differentiable at some of the points $\Theta_1,\dots,\Theta_n$, the equality in the above proposition can be replaced with inequalities.
+Defining the upper Bregman divergence %s for $\Phi$:
+$\uD_{\Phi}(\theta', \theta) 
+= \sup_{w\in \partial \Phi(\theta)} \Phi(\theta') - \Phi(\theta) - \ip{ w, \theta' - \theta}$ and the lower Bregman divergence $\lD_{\Phi}(\theta', \theta)$ similarly with $\inf$ instead of $\sup$, 
+%
+%\begin{align*}
+%\uD_{\Phi}(\theta', \theta) 
+%& = \sup_{w\in \partial \Phi(\theta)} \Phi(\theta') - \Phi(\theta) - \ip{ w, \theta' - \theta}\,,\\
+%\lD_{\Phi}(\theta', \theta) 
+%& = \inf_{w\in \partial \Phi(\theta)} \Phi(\theta') - \Phi(\theta) - \ip{ w, \theta' - \theta}\,.
+%\end{align*}
+we can easily obtain an analogue of \Cref{prop:R_nBregmanDivergence}:
+%These definitions give rise to
+%a trivial extension of \eqref{eq:bregman}:
+%$\lD_{\Phi}(\theta', \theta) \le \ip{v'-v,\theta'} \le \uD_{\Phi}(\theta', \theta)$. Combining with  \cref{prop:regretabel} as above, we obtain the following result:
+%The following holds then:
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\begin{prop} 
+%\label{prop:R_nBregmanDivergence2}
+%We have
+\begin{align}
+\label{eq:regreteq_alt}
+\sum_{t=1}^{n} t\,\lD_{\Phi}(\Theta_t,\Theta_{t-1})
+\le
+R_n 
+\le \sum_{t=1}^{n} t\,\uD_{\Phi}(\Theta_t,\Theta_{t-1})\,.
+\end{align}
+%\end{prop}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%The proof follows the same steps as the proof of the previous proposition, except that instead of \eqref{eq:bregman}
+%we use
+%when $w_t$ was replaced by $\nabla \Phi(\Theta_{t-1})$, now
+%we just  keep $w_t$ up to the end, when we take the infimum (supremum)
+%over all elements of $\partial \Phi(\Theta_{t-1})$ to get the lower (respectively, upper)
+%bound, exploiting that $w_t \in \partial \Phi(\Theta_{t-1})$.
+
+\subsection{Constraint sets with positive curvature}
+The previous results show in an implicit fashion that the curvature of $\cW$ controls the regret. Before presenting our first main result, which makes this connection explicit, we define some basic notions from differential geometry related to the curvature (all differential geometry concept and results that we need can be found in Section 2.5 of \citealp{Sch14:ConvexBodies}).
+
+%\subsubsection{Curvature of planar curves and convex bodies}
+Given a $C^2$ (twice continuously differentiable) planar curve $\gamma$ in $\real^2$, there exists a parametrization with respect to the curve length $s$, such that $\|\gamma'(s)\| = \|\left(x'(s), y'(s)\right)\| = x'(s)^2 + y'(s)^2=1$. Under the curve length parametrization, the curvature of $\gamma$ at $\gamma(s)$ is $\|\gamma''(s)\|$.
+Define the unit normal vector $\bf{n}(s)$ as the unit vector that is perpendicular to $\gamma'(s)$.\footnote{There exist two unit vectors that are perpendicular to $\gamma'(s)$ for each point on $\gamma$. Pick the ones that are consistently oriented.}
+Note that $\bf{n}(s)\cdot \gamma'(s) = 0$. Thus $0=\left(\bf{n}(s)\cdot \gamma'(s)\right)' = \bf{n}'(s)\cdot\gamma'(s) + \bf{n}(s)\cdot \gamma''(s)$, and $\|\gamma''(s)\| = \|\bf{n}(s)\cdot \gamma''(s)\| = \|\bf{n}'(s)\cdot\gamma'(s)\| = \|\bf{n}'(s)\|$. Therefore, the curvature of $\gamma$ at point $\gamma(s)$ is the length of the differential of its unit normal vector.
+ 
+%{\bf Principal Curvature}\\
+Denote the boundary of $\cW$ by $\bd(\cW)$.
+We shall assume that $\cW$ is $C^2$, that is, $\bd(\cW)$ is a twice continuously differentiable submanifold
+of $\R^d$. 
+We denote the tangent plane of $\bd(\cW)$ at point $w$ by $T_w\cW$. Now there exists a unique unit vector at $w$ that is perpendicular to $T_w\cW$ and points outward of $\cW$.
+In fact, one can define a continously differentiable normal unit vector field on $\bd(\cW)$, $u_{\cW}: \bd(\cW) \to \bS^{d-1}$, the so-called Gauss map, which maps a boundary point $w\in \bd(\cW)$ to the unique outer normal vector to $\cW$ at $w$, where
+$\bS^{d-1}=\set{x\in\R^d}{\|x\|_2=1}$ denotes the unit sphere in $d$-dimensions. 
+The differential of the Gauss map, $\nabla u_{\cW}(w)$, defines a linear endomorphism of $T_w\cW$. Moreover, $\nabla u_{\cW}(w)$ is a self-adjoint operator, with nonnegative eigenvalues.
+The differential of the Gauss map, $\nabla u_{\cW}(w)$, describes the curvature of $\bd(\cW)$ via the second fundamental form. In particular, the \emph{principal curvatures} of $\bd(\cW)$ at $w\in\bd(\cW)$ is defined as the eigenvalues of $\nabla u_{\cW}(w)$.   
+Perhaps a more intuitive, yet equivalent definition, is that the principal curvatures are the eigenvalues
+of the Hessian of $f=f_w$ in the parameterization $t\mapsto w+t-f_w(t) u_{\cW}(w)$ of $\bd(\cW)$
+which is valid in a small open neighborhood of $w$, where $f_w: T_w \cW \to [0,\infty)$ is
+a suitable convex, nonnegative valued function that also satisfies $f_w(0)= 0$ and where $T_w \cW$, 
+a hyperplane of $\R^d$,
+denotes the tangent space of $\cW$ at $w$, 
+obtained by taking the support plane $H$ of $\cW$ at $w$ and shifting it by $-w$.
+Thus, the principal curvatures at some point $w\in \bd(\cW)$ describe the local shape of $\bd(\cW)$ 
+up to the second order. 
+In this paper, we are interested in the minimum principal curvature at $w\in\bd(\cW)$, which can be intepreated as the minimum curvature at $w$ over all the planar curves $\gamma \in \bd(\cW)$ that go through $w$.
+
+A related concept that has been used in convex optimization to show fast rates is that of a strongly convex constraint set \citep{LePo66,garber2014faster}:
+$\cW$ is $\lambda$-strongly convex with respect to the norm $\norm{\cdot}$ if, for  any $x,y\in \cW$ and $\gamma\in [0,1]$, the $\norm{\cdot}$-ball with origin $\gamma x + (1-\gamma) y$ and radius $\gamma(1-\gamma) \lambda \norm{x-y}^2/2 $ is included in $ \cW$. %\footnote{$B(o,r)$ denotes the $\norm{\cdot}$-ball with origin $o$ and radius $r$.}
+We show in \cref{strongconvex} in the appendix that a convex body
+ $\cW \in C^2$ with non-zero curvatures is $\lambda$-strongly convex with respect to $\norm{\cdot}_2$ if and only if the principal curvatures of the surface $\bd(\cW)$ are all at least $\lambda$.
+
+As promised, our next result connects the principal curvatures of $\bd(\cW)$ to the regret of FTL
+and shows that FTL enjoys logarithmic regret for highly curved surfaces, as long as $\norm{\Theta_t}_2$ 
+is bounded away from zero.
+\begin{thm}
+\label{thm:R_curvesurface}
+Let $\cW\subset \R^d$ be a $C^2$ convex body\footnote{Following \citet{Sch14:ConvexBodies}, a convex body of $\R^d$ is any
+ non-empty, compact, convex subset of $\R^d$.}  with $d\ge 2$.
+Let $M = \max_{f\in \cF} \norm{f}_2$ and assume that $\Phi$ is differentiable at $(\Theta_t)_{t}$.
+Assume that the principal curvatures of the surface $\bd(\cW)$ 
+are all at least $\lambda_0$ for some constant $\lambda_0>0$ and $L_n:=\min_{1\le t \le n} \|\Theta_t\|_2 >0$. 
+Choose $w_1\in \bd(\cW)$.
+Then
+\[
+R_n \le \frac{2M^2}{\lambda_0 L_n}(1+ \log(n))\,.
+\]
+\end{thm}
+\begin{wrapfigure}{R}{5.4cm}
+	\vspace{-.5cm}
+\begin{framed}
+	\centering
+	\includegraphics[width=4.8cm, trim={4.8cm 1cm 3cm 0},clip]{figures/GaussmapPro}
+	\caption{Illustration of the construction used in the proof of~\eqref{eq:middletheta}.} 
+  	\label{fig:cuttingplane}
+\end{framed}
+\vspace{-.8cm}
+\end{wrapfigure} 
+
+As we will show later in an essentially matching lower bound, this bound is tight, showing that the forte  %%%fort\'e???
+of FTL is when $L_n$ %:=\min_{1\le t\le n} \norm{\Theta_t}_2$ 
+is bounded away from zero and $\lambda_0$ is large.
+Note that the bound is vacuous as soon as $L_n =O( \log(n)/n )$
+and is worse than the minimax bound of $O(\sqrt{n})$ when $L _n = o( \log(n)/\sqrt{n} )$. 
+One possibility to reduce the bound's sensitivity to $L_n$  
+is to use the trivial bound $\ip{w_{t+1}-w_t,\Theta_t} \le L W = L \sup_{w,w'\in \cW} \norm{w-w'}_2$ 
+for indices $t$ when $\norm{\Theta_t}\le L$. Then, by optimizing the bound over $L$, 
+one gets a data-dependent bound
+of the form $\inf_{L>0} \left(\frac{2M^2}{\lambda_0 L} (1+\log(n)) +  LW \, \sum_{t=1}^n t \,\one{ \norm{\Theta_t}\le L }\right)$,
+which is more complex, but is free of $L_n$ and thus reflects the nature of FTL better.
+Note that in the case of stochastic problems, where $f_1,\ldots,f_n$ are independent and identically distributed (i.i.d.) with $\mu := -\Exp{\Theta_t}\ne 0$, the probability that $\norm{\Theta_t}_2 < \norm{\mu}_2/2$ is exponentially small in $t$. Thus, selecting $L=\norm{\mu}_2/2$ in the previous bound, the contribution of the expectation of the second term is $O(\norm{\mu}_2W)$, giving an overall bound of the form $O(\frac{M^2}{\lambda_0 \norm{\mu}_2}\log(n)+\norm{\mu}_2 W)$. \todor{the second term should be $\frac{W}{\|\mu\|_2^3}$. The sum of the probabilities brings a term $\frac{1}{\|\mu\|_2^4}$.} \todor{I correct the sum to $\min$.}\todoa{The correct is the sum. And there is no need to multiply the second term by $n$, since it is a sum of exponentially decaying sequence}
+After the proof we will provide some simple examples that should make it more intuitive 
+how the curvature of $\cW$ helps keeping the regret of FTL small.
+\begin{proof}
+Fix  $\theta_1, \theta_2 \in \real^d$ and let 
+$w^{(1)} = \argmax_{w\in\cW}\inpro{w}{\theta_1}$,
+$w^{(2)} = \argmax_{w\in\cW}\inpro{w}{\theta_2}$. 
+Note that if $\theta_1,\theta_2\ne 0$ then $w^{(1)} , w^{(2)}  \in \bd(\cW)$. 
+Below we will show that
+\begin{align*}
+\inpro{w^{(1)} - w^{(2)} }{\theta_1} 
+	& \le \frac{1}{2\lambda_0} \frac{\|\theta_2 - \theta_1\|_2^2}{\|\theta_2\|_2}\,.
+	 \numberthis\label{eq:middletheta}
+\end{align*}
+\cref{prop:regretabel}  suggests that it suffices to bound $\ip{w_{t+1}-w_t,\Theta_t}$. By \eqref{eq:middletheta}, we see
+ that it suffices to bound how much $\Theta_t$ moves.
+A straightforward calculation shows that $\Theta_t$ cannot move much:
+\begin{lemma}
+\label{prop:avgdiff}
+For any norm $\norm{\cdot}$ on $\cF$, we have 
+$
+\|\Theta_t - \Theta_{t-1}\| \le \frac{2}{t}M\,,
+$
+where $M = \max_{f\in\cF} \|f\|$ is a constant that depends on $\cF$ and the norm $\norm{\cdot}$.
+\end{lemma}
+Combining inequality \eqref{eq:middletheta} with \cref{prop:regretabel} and \cref{prop:avgdiff}, we get
+\begin{align*}
+R_n &= \sum_{t=1}^{n} t\ip{ w_{t+1}-w_t,\Theta_t} %\\ & 
+\le \sum_{t=1}^{n} \frac{t}{2\lambda_0} \frac{\|\Theta_t - \Theta_{t-1}\|_2^2}{\|\Theta_{t-1}\|_2} \\
+&\le \frac{2M^2}{\lambda_0}\sum_{t=1}^{n} \frac{1}{t\|\Theta_{t-1}\|_2} \le \frac{2M^2}{\lambda_0L_n} \sum_{t=1}^{n} \frac{1}{t}
+\le \frac{2M^2}{\lambda_0L_n} (1+\log(n))\,.
+\end{align*}
+To finish the proof, it thus remains to show~\eqref{eq:middletheta}.
+
+The following elementary lemma relates the cosine of the angle between two vectors $\theta_1$ and $\theta_2$ to the squared normalized distance between 
+the two vectors, thereby reducing our problem to bounding the cosine of this angle.
+For brevity, we denote by $\cos\inangle{\theta_1}{\theta_2}$
+the cosine of the angle between $\theta_1$ and $\theta_2$. 
+\begin{lemma}
+\label{lem:upperboundcos}
+For any non-zero vectors $\theta_1, \theta_2 \in \real^d$,
+\begin{align}
+1- \cos \inangle{\theta_1}{\theta_2} \le \frac{1}{2} \frac{\|\theta_1 - \theta_2\|_2^2}{\|\theta_1\|_2\|\theta_2\|_2}.
+\label{eq:angleineq}
+\end{align}
+\end{lemma}
+
+\if0
+\begin{figure}[h]
+  \centering
+	\includegraphics[height=4cm]{figures/GaussmapPro}
+  \caption{Illustration of the construction used in the proof of~\eqref{eq:middletheta}.} 
+  \label{fig:cuttingplane}
+\end{figure}
+\fi
+
+With this result, we see that it suffices to upper bound $\cos \inangle{\theta_1}{\theta_2}$ by $1-\lambda_0 \inpro{w^{(1)}-w^{(2)}}{\frac{\theta_1}{\|\theta_1\|_2}}$.
+To develop this bound, let $\ttheta_i = \frac{\theta_i}{\|\theta_i\|_2}$ for $i=1,2$.
+The angle between $\theta_1$ and $\theta_2$ is the same as the angle between 
+the normalized vectors $\ttheta_1$ and $\ttheta_2$.
+To calculate the cosine of the angle between $\ttheta_1$ and $\ttheta_2$,
+let $P$ be a plane spanned by $\ttheta_1$ and $w^{(1)}-w^{(2)}$ and passing through $w^{(1)}$
+($P$ is uniquely determined if $\ttheta_1$ is not parallel to $w^{(1)}-w^{(2)}$;
+if there are multiple planes, just pick any of them). 
+Further, let $\htheta_2\in \bS^{d-1}$ be the unit vector along the projection of $\ttheta_2$ onto the plane $P$, as indicated in \cref{fig:cuttingplane}.
+Clearly, $\cos \inangle{\ttheta_1}{\ttheta_2} \le \cos \inangle{\ttheta_1}{\htheta_2}$.
+
+
+Consider a curve $\gamma(s)$ on $\bd(\cW)$ connecting $w^{(1)}$ and $w^{(2)}$ that is defined by the intersection of $\bd(\cW)$ and $P$ and is parametrized by its curve length $s$ so that $\gamma(0) = w^{(1)}$ and $\gamma(l) = w^{(2)}$,
+where $l$ is the length of the curve $\gamma$ between $w^{(1)}$ and $w^{(2)}$.
+Let $u_{\cW}(w)$ denote the outer normal vector to $\cW$ at $w$ as before,
+and let $u_\gamma\, : \, [0,l]\rightarrow \bS^{d-1}$ be such that $u_\gamma(s) = \htheta$ where $\htheta$ is the unit vector parallel to the projection of $u_{\cW}(\gamma(s))$ on the plane $P$. 
+By definition, $u_\gamma(0) = \ttheta_1$ and $u_\gamma(l) = \htheta_2$.
+Note that in fact $\gamma$ exists in two versions since $\cW$ is a compact convex body,
+hence the intersection of $P$ and $\bd(\cW)$ is a closed curve.
+Of these two versions we choose the one that satisfies that $\ip{\gamma'(s),\ttheta_1}\le 0$ for $s\in [0,l]$.\footnote{$\gamma'$ and $u'_\gamma$ denote the derivatives of $\gamma$ and $u$, respectively, which exist since $\cW$ is $C^2$.}
+Given the above, we have
+\begin{align*}
+\cos \inangle{\ttheta_1}{\htheta_2} & = \inpro{\htheta_2}{\ttheta_1} 
+	 = 1 \! + \inpro{\htheta_2 - \ttheta_1}{\ttheta_1} 
+	  = 1\!+ \Big\langle\int_{0}^{l} u_\gamma'(s)\,\text{d}s, \ttheta_1 \Big\rangle
+	 = 1\!+ \!\int_{0}^{l} \inpro{u_\gamma'(s)}{\ttheta_1} \,\text{d}s. \numberthis \label{eq:cosint}
+\end{align*}
+Note that $\gamma$ is a planar curve on $\bd(\cW)$, 
+thus its curvature $\lambda(s)$ satisfies $\lambda(s) \ge \lambda_0$ for $s\in [0,l]$.
+Also, for any $w$ on the curve $\gamma$, $\gamma'(s)$ is a unit vector parallel to $P$. 
+Moreover, $u_\gamma'(s)$ is parallel to $\gamma'(s)$ and $\lambda(s) = \|u_\gamma'(s)\|_2$.
+Therefore, 
+\[
+\inpro{u_\gamma'(s)}{\ttheta_1} = \|u_\gamma'(s)\|_2\inpro{\gamma'(s)}{\ttheta_1} \le \lambda_0\inpro{\gamma'(s)}{\ttheta_1},
+\]
+where the last inequality holds because $\inpro{\gamma'(s)}{\ttheta_1} \le 0$.
+Plugging this into~\eqref{eq:cosint}, we get the desired
+\begin{align*}
+\cos \inangle{\ttheta_1}{\htheta_2}   
+	& \le 1+ \lambda_0\, \int_{0}^{l} \, \inpro{\gamma'(s)}{\ttheta_1}  \,\text{d}s 
+	    = 1+ \lambda_0 \Big\langle\int_{0}^{l} \gamma'(s) \,\text{d}s, \ttheta_1 \Big\rangle
+	  = 1 - \lambda_0 \inpro{w^{(1)}  - w^{(2)}}{\ttheta_1}\,.
+\end{align*}
+Reordering and combining with~\eqref{eq:angleineq} we obtain
+\begin{align*}
+\inpro{w^{(1)}  - w^{(2)}}{\ttheta_1} 
+	& \le \frac{1}{\lambda_0} \left( 1- \cos \inangle{\ttheta_1}{\htheta_2} \right)
+	%									  \left( 1- \cos \inpro{\ttheta_1}{\ttheta_2} \right) 
+	 \le \frac{1}{\lambda_0} \left( 1- \cos \inangle{\theta_1}{\theta_2} \right) 
+	 \le \frac{1}{2\lambda_0} \frac{\|\theta_1 - \theta_2\|_2^2}{\|\theta_1\|_2\|\theta_2\|_2}\,.
+	% \numberthis\label{eq:middletheta},
+\end{align*}
+Multiplying both sides by $\norm{\theta_1}_2$ gives~\eqref{eq:middletheta}, thus, finishing the proof.
+\end{proof}
+
+
+\begin{example}
+	\label{ex:curvature}
+The smallest principal curvature of some common convex bodies are as follows:
+\begin{itemize}\setlength{\itemsep}{0pt}
+\item The smallest principal curvature $\lambda_0$ of the Euclidean ball $\cW = \set{w}{\|w\|_2\le r}$ of radius $r$ 
+satisfies $\lambda_0=\frac{1}{r}$.
+\item Let $Q$ be a positive definite matrix.
+If $\cW = \set{w}{w^\top Q w\le 1 }$ then $\lambda_0=\lambda_{\min}/\sqrt{\lambda_{\max}}$, 
+where $\lambda_{\min}$ and $\lambda_{\max}$ are the minimal, respectively, maximal eigenvalues of $Q$.
+(\citealt{Pol96} also derived this result for the strong convexity definition \eqref{sc:l2} in \cref{strongconvex}.)
+%\item If $\cW$ is a cylinder, then $\lambda_0 = 0$, and \cref{thm:R_curvesurface} does not cover this case.
+%However, from the proof, it is apparent that if $\Theta_t$ never enters the flat regions, we can still get a result
+%where the definition of $\lambda_0$ is restricted to the ``curved part'' of $\bd(\cW)$. More generally, a local
+%version of the theorem could also be easily given (for brevity, this result is omitted).
+\item
+In general, let $\phi:\R^d \to \R$ be a $C^2$ convex function.
+Then, for $\cW = \set{w}{\phi(w)\le 1}$, 
+$\lambda_0=\min_{w\in\bd(\cW)}\min_{v\,:\,\|v\|_2=1, v\perp \phi'(w) }\frac{v^{\top}\nabla^2\phi(w) v}{\|\phi'(w)\|_2}$~. \todoa{We should prove this one}
+\end{itemize}
+\end{example}
+
+\begin{wrapfigure}{R}{0.35\textwidth}
+	\vspace{-.55cm}
+\begin{framed}
+	\centering
+	\includegraphics[width = \textwidth,
+	trim={6.2cm 1cm 1.8cm 0},clip]
+	{figures/ExcessError}
+	\vspace{-0.4cm}
+	\caption{Illustration of how curvature helps to keep the regret small.
+	}
+	\label{fig:excesserror}
+	\vspace{-0.1cm}
+\end{framed}
+	\vspace{-1.5cm}
+\end{wrapfigure} 
+In the stochastic i.i.d.\ case, when $\Exp{\Theta_t} = -\mu$, we have $\norm{\Theta_t +\mu}_2 = O(1/\sqrt{t})$ with high probability. 
+Thus say, for $\cW$ being the unit ball of $\R^d$, one has $w_t = \Theta_t/\norm{\Theta_t}_2$; therefore,
+a crude bound suggests that $\norm{w_t-  w^* }_2 = O(1/\sqrt{t})$, overall predicting that 
+$\Exp{R_n} = O(\sqrt{n})$, while the previous result predicts that $R_n$ is much smaller.
+In the next example we look at the unit ball, to explain geometrically, what ``causes'' the smaller regret.
+\begin{example}
+	\label{exam:ERM}
+Let $\cW = \set{w}{\|w\|_2\le 1}$ and
+consider a stochastic setting where the $f_i$ are i.i.d. samples 
+from some underlying distribution with expectation $\Exp{f_i} = \mu = (-1,0,\ldots,0)$ and $\|f_i\|_\infty\le M$.
+%We are interested in the expected excess loss $\xi =\Exp{\inpro{\what{w_n}}{\mu}} - \inpro{w^*}{\mu}$, where $\what{w_n}$ is either the prediction of ERM in batch learning or the prediction of FTL using an online-to-batch reduction.
+It is straightforward to see that $w^* = (1,0,\ldots,0)$, and thus $\inpro{w^*}{\mu} = -1$.
+%A simple continuity argument would suggest $w_t \approx
+%On one hand, \cref{thm:R_curvesurface} shows that FTL suffers $O(\log n)$ regret. Thus, by an online-to-batch reduction\todor{Reference.}, the prediction of FTL has expected excess loss $\xi = O(\frac{\log n}{n})$. 
+%Will this fast rate $O(\frac{\log n}{n})$ contradict the common rate of $O(\sqrt{n})$ in statistical estimation?
+Let $E = \set{-\theta}{\|\theta - \mu\|_2 \le \epsilon}$. As suggested beforehand, we expect $-\mu_t\in E$ with high probability.
+As shown in \cref{fig:excesserror}, 
+the excess loss of an estimate $\vv{OA}$ is $\inpro{\vv{O\tilde{A}}}{\vv{OD}} - 1 = |\tilde{B}D|$.
+Similarly, the excess loss of an estimate $\vv{OA'}$ in the figure is $|{CD}|$.
+Therefore, for an estimate $-\mu_t \in E$, the point $A$ is where the largest excess loss is incurred.
+The triangle $OAD$ is similar to the triangle $ADB$. Thus $\frac{|BD|}{|AD|} = \frac{|AD|}{|OD|}$. Therefore, 
+$|BD| = \epsilon^2$ and since $|{\tilde{B}D}| \le |{BD}|$, 
+if $\|\mu_t - \mu\|_2 \le \epsilon$, the excess error is at most $\epsilon^2 = O(1/t)$, making the regret $R_n = O(\log n)$.
+
+\if0
+On the other hand, the prediction of ERM $\what{w_n} = \frac{-\mu_n}{\|\mu_n\|_2}$, where $\mu_n = \frac{1}{n}\sum_{i=1}^n f_i$.
+By Hoeffding's inequality, 
+\[
+\Prob{ \|\mu_n - \mu\|_2 \ge \epsilon } \le 2d\exp\left(-\frac{n\epsilon^2}{2dM^2}\right).
+\]
+
+Moreover, we further show in the appendix that for $\what{w} = \frac{-\mu_n}{\|\mu_n\|_2}$ and $\|\mu_n - \mu\|_2 \le \epsilon$, 
+\[
+\inpro{\what{w}}{\mu} - \inpro{w^*}{\mu} \le \epsilon^2. \numberthis\label{eq:exampleloss}
+\]
+Therefore,
+\[
+\xi = \Exp{\inpro{\hat{w}_n}{\mu} - \inpro{w^*}{\mu}} \le \int_{0}^{\infty} \epsilon^2 c_1\exp\left(-\frac{n\epsilon^2}{c_2}\right) \text{d}\epsilon = \frac{c_1}{n}\int_{0}^{\infty} \epsilon^2\exp\left(-\frac{\epsilon^2}{c_2}\right) \text{d}\epsilon = O(\frac{1}{n}).
+\]
+\fi
+\end{example}
+
+
+%\subsection{$\alpha$-strong convexity and the smallest principal curvature of $\cW$}
+
+Our last result in this section is an asymptotic lower bound for the linear game, showing that FTL achieves the optimal rate under the condition that  $\min_t \|\Theta_t\|_2\ge L >0$.
+\begin{thm}
+	\label{thm:lowerbound}
+		Let $\lambda,L \in (0,1)$. Assume that  $\seto{(1,-L), (-1, -L)} \subset \cF$ and let \[
+		\cW = \seto{(x,y) \in \R^2: x^2 + \frac{y^2}{\lambda^2} \le 1}
+		\]
+		be
+		an ellipsoid with principal curvature $h$.
+ 		Then, for any learning strategy, there exists a sequence of losses in $\mathcal F$ such that $R_n = \Omega\left(\log(n)/(Lh)\right)$ and $\|\Theta_t\|_2 \ge L$ for all $t$.
+\end{thm}
+
+Note that by Example~\ref{ex:curvature}, the minimal principal curvature of $\cW$ in the above theorem is $\lambda$. In fact, it is not too hard to extend the above argument for any set $\cW$ such that there is $w \in \bd(\cW)$ where the curvature is $h$, and the curvature is a continuous function in a neighborhood of $w$ over the boundary $\bd(\cW)$. The constants in the bound then depend on how fast the curvature changes within this neighborhood.
+
+%As mentioned in the introduction,  it has been observed in convex optimization that 
+%a faster rate can be achieved when $\cW$ is $\alpha$-strongly convex \citep{garber2014faster}.  We close this section by noting that $\alpha$-strong convexity of $\cW$
+%implies our condition, namely that the smallest principal curvature of $\bd(\cW)$ is at least $\alpha$.
+%\todoc{Does this reverse hold?}
+%\begin{prop}
+%	\label{prop:stronglyconvexset}
+%	Assume that $\cW$ is an $\alpha$-strongly convex set. Then the smallest principal curvature of $\bd(\cW)$ is at least $\alpha$.
+%\end{prop}
+
+
+\subsection{Other regularities}
+
+So far we have looked at the case when FTL achieves a low regret due to the curvature of $\bd(\cW)$.
+The next result characterizes the regret of FTL when $\cW$ is a polytope, which has a flat, non-smooth boundary and thus \cref{thm:R_curvesurface} is not applicable. 
+For this statement recall that given some norm $\|\cdot\|$,  its dual norm is defined by $\|w\|_* = \sup_{\|v\|\le 1} \inpro{v}{w}$.
+\begin{thm}
+	\label{thm:regretpolytope}
+	Assume that $\cW$ is a polytope
+	and that $\Phi$ is differentiable at $\Theta_i$, $i= 1, \ldots, n$. 
+	Let $w_t = \argmax_{w\in\cW} \inpro{w}{\Theta_{t-1}}$,
+	$W = \sup_{w_1,w_2\in\cW}\|w_1 - w_2\|_*$ and $F = \sup_{f_1,f_2\in \cF} \norm{f_1-f_2}$.
+	 Then the regret of FTL is 
+	\[
+	R_n \le W\, \sum_{t=1}^{n} t \,\ind(w_{t+1}\neq w_{t})  \|\Theta_t - \Theta_{t-1}\| \le FW\,\sum_{t=1}^{n} \ind(w_{t+1}\neq w_{t})\,.
+	\]
+\end{thm}
+Note that when $\cW$ is a polytope, $w_t$ is expected to ``snap'' to some vertex of $\cW$. Hence, 
+we expect the regret bound to be non-vacuous, if, e.g., $\Theta_t$ ``stabilizes'' around some value. Some examples after the 
+proof will illustrate this.
+\begin{proof}
+Let $v \!=\! \argmax_{w\in\cW} \inpro{w}{\theta}$, $v'\!=\!\argmax_{w\in \cW}\ip{w,\theta'}$. 
+Similarly to the proof of \cref{thm:R_curvesurface},
+	\begin{align*}
+	\inpro{v'-v}{\theta'} & = \inpro{v'}{\theta'} - \inpro{v'}{\theta} + \inpro{v'}{\theta} - \inpro{v}{\theta} + \inpro{v}{\theta} -\inpro{v}{\theta'} \\
+	& \le \inpro{v'}{\theta'} - \inpro{v'}{\theta} + \inpro{v}{\theta} -\inpro{v}{\theta'} %\numberthis \label{eq:eq211}
+	= \inpro{v' - v}{\theta' - \theta} 
+	%\\& 
+	\le W\,\ind(v'\neq v)\|\theta' - \theta \|,
+	\end{align*}
+	where the first inequality %~\eqref{eq:eq211} 
+	holds because $\inpro{v'}{\theta} \le \inpro{v}{\theta}$.
+	Therefore, by \cref{prop:avgdiff}, 
+	\begin{align*}
+	R_n & = \sum_{t=1}^n t\,\ip{ w_{t+1}-w_t,\Theta_t} 
+	 \le W\,\sum_{t=1}^{n} t\, \ind(w_{t+1}\!\neq\! w_{t})  \|\Theta_t - \Theta_{t-1}\| 
+	 \le FW\,\sum_{t=1}^{n} \ind(w_{t+1}\!\neq\! w_{t})\,.
+	\end{align*}
+\end{proof}
+\if0
+\begin{comm}
+	\cref{thm:regretpolytope} bounds the regret of FTL by the number of switches of the maximizers $\sum_{t=1}^{n} \ind(w_t\neq w_{t-1})$.
+\end{comm}
+\fi
+%\begin{comm}
+As noted before,  since $\cW$ is a polytope, $w_t$ is (generally) attained at the vertices. 
+In this case, the epigraph of $\Phi$  is a polyhedral cone. Then, the event when $w_{t+1}\neq w_{t}$, i.e., when 
+	the ``leader'' switches corresponds to when 
+	$\Theta_{t}$ and $\Theta_{t-1}$ belong to different linear regions corresponding to different linear pieces of the graph of $\Phi$.
+%\end{comm}
+
+We now spell out a corollary for the stochastic setting. In particular, in this case FTL will often enjoy a constant regret:
+\begin{cor}[Stochastic setting]
+	\label{cor:stocpolytope} Assume that $\cW$ is a polytope and 
+	that $(f_t)_{1\le t \le n}$ is an i.i.d. sequence of random variables 
+	such that $\Exp{f_i} = \mu$ and $\|f_i\|_\infty \le M$. Let  $W = \sup_{w_1,w_2\in \cW} \norm{w_1-w_2}_1$.
+	Further assume that there exists a constant $r > 0$ 
+	such that $\Phi$ is differentiable for any $\nu$ such that $\|\nu-\mu\|_\infty \le r$. 
+	\todoc{We should probably explain the intuitive meaning of this. Maybe replace this with something 
+	more intuitive in fact.. $r$ should be the radius of the largest ball such that $\nu$ and $\mu$ are on the same
+	face of $\cW$. Then we won't need $\Phi$ indeed.} \todoa{Explained after the corollary.}
+	Then, % there exists a constant $C$, such that 
+	\[
+		\Exp{R_n} \le 2MW \, (1+4d M^2/r^2 )\,.
+%	O(\sum_{t=1}^{n} \Prob{-\Theta_t \notin V}) = O(1).
+	\]
+\end{cor}
+The condition on $\Phi$ means that $r$ can be selected to be the radius of the largest ball such that the optimal decisions for expected losses $\mu$ and $\nu$ (i.e., the maximizers defining $\Phi(-\mu)$ and $\Phi(-\nu)$) belong to the same face of $\cW$.
+\begin{proof}
+	Let $V = \set{\nu}{\|\nu - \mu\|_\infty\le r}$. 
+	Note that the epigraph of the function $\Phi$ is a polyhedral cone.
+	Since $\Phi$ is differentiable in the interior of $V$, $\set{(\theta, \Phi(\theta))}{\theta\in V}$ is a subset of a linear subspace.
+	Therefore, for $-\Theta_t, -\Theta_{t-1} \in V$, $w_{t+1}=w_t$.
+	Hence, by \cref{thm:regretpolytope},
+	\[
+	\Exp{R_n} \le 2MW\,\sum_{t=1}^{n} \Prob{-\Theta_t,-\Theta_{t-1} \notin V}
+	 \le 4MW\,\left(1+\sum_{t=1}^{n} \Prob{-\Theta_t \notin V}\right)\,.
+	\]
+	On the other hand, note that $\|f_i\|_\infty\le M$.
+	Then 
+	\begin{align*}
+	\Prob{-\Theta_t \notin V}
+	    & = \Prob{ \norm{\frac{1}{t} \sum_{i=1}^{t} f_i - \mu}_\infty \ge r}
+%		& \le \Pr\left( \|\frac{1}{t} \sum_{i=1}^{t} f_i - \mu\|_\infty \ge \frac{r}{\sqrt{d}}\right) \\
+		 \le \sum_{j=1}^{d} \Prob{ \left|\frac{1}{t} \sum_{i=1}^{t} f_{i,j} - \mu_j\right| \ge r }
+%		& \le 2 \sum_{j=1}^{d} \text{exp}\left( -\frac{tr^2}{2M^2}\right) \numberthis \label{eq:eq212}\\
+		 \le 2d e^{-\frac{tr^2}{2M^2}}\,,
+	\end{align*}
+	where the last inequality
+	%~\eqref{eq:eq212} 
+	is due to Hoeffding's inequality.
+	Now, using that for $\alpha>0$, $\sum_{t=1}^n \exp(-\alpha t ) \le \int_0^n \exp(-\alpha t ) dt 
+%	= [\frac{\exp(-\alpha t)}{-\alpha}]_{0}^n 
+%	=  \frac{\exp(-\alpha 0)-\exp(-\alpha n)}{\alpha}
+	\le \frac{1}{\alpha}$, we get
+$
+	\Exp{R_n} \le 2MW \, (1+4d M^2/r^2 )
+$.
+\end{proof}
+\if0
+\begin{comm}
+	Existing results of FTL in the expert setting  when $\cW = \set{w}{w\ge 0, \|w\|_1\le 1}$ can be recovered from \cref{thm:regretpolytope} and \cref{cor:stocpolytope}, that FTL achieves constant regret in the stochastic setting, while it may suffer a linear regret in the adversarial setting.
+\end{comm}
+\fi
+%\begin{comm}
+	The condition that $\Phi$ is differentiable for any $\nu$ such that $\|\nu-\mu\|_\infty \le r$ is equivalent to that $\Phi$ is differentiable at $\mu$. 
+	By \cref{prop:derivativePhi}, this condition requires that at $\mu$, $\max_{w\in\cW} \ip{w,\theta}$ has a unique optimizer.
+	Note that the volume of the set of vectors $\theta$ with multiple optimizers is zero. 
+%\end{comm}
+
+\section{An adaptive algorithm for the linear game}
+While as shown in \cref{thm:R_curvesurface}, FTL can exploit the curvature of the surface of the constraint set to achieve $O(\log n)$ regret, it requires the curvature condition and $\min_t \|\Theta_t\|_2 \ge L$ being bounded away from zero, or
+ it may suffer even linear regret.
+On the other hand, many algorithms,  such as the "Follow the regularized leader" (FTRL) algorithm, are known to achieve a regret guarantee of $O(\sqrt{n})$ even for the worst-case data in the linear setting.
+This raises the question whether one can have an algorithm that can 
+achieve constant or $O(\log n)$ regret in the respective settings of  \cref{cor:stocpolytope} or \cref{thm:R_curvesurface},
+while it still maintains $O(\sqrt{n})$ regret for worst-case data. 
+One way to design an adaptive algorithm is to use the ($\cA$, $\cB$)-prod algorithm of \citet{sani2014exploiting}, leading to the following result:
+\begin{prop}
+Consider ($\cA$, $\cB$)-prod of \citet{sani2014exploiting}, where algorithm \todoa{Do we need to write out ($\cA$, $\cB$)-prod?}
+ $\cA$ is chosen to be FTRL with an appropriate regularization term, 
+ while $\cB$ is chosen to be FTL. 
+Then the regret of the resulting hybrid algorithm $\cH$ enjoys the following guarantees:
+%(i) If FTL achieves constant regret as in the setting of \cref{cor:stocpolytope}, then the regret of $\cH$ is also constant.
+%(ii) If FTL achieves a regret of $O(\log n)$ as in the setting of \cref{thm:R_curvesurface}, then the regret of $\cH$ is also $O(\log n)$.
+%(iii) Otherwise, the regret of $\cH$ is at most $O(\sqrt{n\log n})$.
+\begin{itemize}\setlength{\itemsep}{0pt}
+\item If FTL achieves constant regret as in the setting of \cref{cor:stocpolytope}, then the regret of $\cH$ is also constant.
+\item If FTL achieves a regret of $O(\log n)$ as in the setting of \cref{thm:R_curvesurface}, then the regret of $\cH$ is also $O(\log n)$.
+\item Otherwise, the regret of $\cH$ is at most $O(\sqrt{n\log n})$.
+\end{itemize}
+\end{prop} 
+
+
+\section{Conclusion}
+FTL is a simple method that is known to perform well in many settings, while 
+existing worst-case results fail to explain its good performance.
+While taking a thorough look at why and when FTL can be expected to achieve small regret, we discovered that the curvature of the boundary of the constraint and having average loss vectors bounded away from zero help keep the regret of FTL small. These conditions are significantly different from previous conditions on the curvature of the loss functions which have been considered extensively in the literature.
+It would be interesting to further investigate this phenomenon for other algorithms or in other learning settings.
+%We suspect that other algorithms can also take advantage of this, opening up interesting new 
+%Amongst the numerous possible follow-up questions, perhaps the most interesting would be to design 
+%a version of FTRL where the regularization coefficient would be chosen adaptive to interpolate between the performance
+%of FTL and FTRL in a data-dependent fashion. While such a result was achieved with 
+%($\cA$, $\cB$)-prod, 
+
+\section*{Acknowledgements}
+This work was supported in part by the Alberta Innovates Technology Futures through the Alberta Ingenuity Centre for Machine Learning and by NSERC.
+During part of this work, T. Lattimore was with the Department of Computing Science, University of Alberta.
+
+\small
+\setlength{\bibsep}{0.4\bibsep}
+\bibliography{reference}
+\bibliographystyle{plainnat}
+\include{appendix}
+\include{otherResults}
+\end{document}
+
+
+
+

@@ -1,0 +1,1049 @@
+\documentclass[english]{article} % For LaTeX2e
+
+\usepackage{color}
+\usepackage[usenames,dvipsnames]{xcolor}
+%\definecolor{darkgreen}{RGB}{26, 82, 87} % solid linking color
+\usepackage[bookmarks=false]{hyperref}
+  \hypersetup{
+  	pdftex,
+    pdffitwindow=true,
+    pdfstartview={FitH},
+    pdfnewwindow=true,
+    colorlinks,
+    linktocpage=true,
+    linkcolor=Green,
+    urlcolor=Green,
+    citecolor=Green
+}
+
+% uncomment the following line and comment the line after it if you want to turn
+% off todos
+%\usepackage[disable,backgroundcolor = White,textwidth=\marginparwidth]{todonotes}
+\usepackage[backgroundcolor = White,textwidth=\marginparwidth]{todonotes}
+\newcommand{\todoc}[2][]{\todo[color=Apricot!20,size=\tiny,#1]{#2}}
+\newcommand{\todot}[2][]{\todo[color=Cerulean!20,size=\tiny,#1]{#2}}
+\newcommand{\todoa}[2][]{\todo[color=Purple!20,size=\tiny,#1]{#2}}
+\newcommand{\todor}[2][]{\todo[color=Blue!10,size=\tiny,#1]{#2}}
+
+%\usepackage{nips12submit_e,times}
+%\usepackage{geometry}
+\usepackage{comment}
+\usepackage{babel}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[authoryear]{natbib}
+\usepackage{xspace}
+\usepackage{multirow}
+\usepackage{enumerate}
+\usepackage{algcompatible}
+\usepackage{algorithm}
+\usepackage{array}
+\usepackage{setspace}
+\usepackage[capitalize]{cleveref}
+\usepackage{graphics}
+\usepackage{epstopdf}
+\usepackage[margin=1.0in]{geometry}
+\usepackage{cancel}
+
+
+\setlength{\headheight}{15.0pt}
+\newcounter{assumption}%[section]
+\newcommand{\theassumptionletter}{A}
+\renewcommand{\theassumption}{\theassumptionletter\arabic{assumption}}
+
+\newcommand{\cA}{\mathcal{A}}
+\newcommand{\cB}{\mathcal{B}}
+\newcommand{\cX}{\mathcal{X}}
+\newcommand{\cY}{\mathcal{Y}}
+\newcommand{\cZ}{\mathcal{Z}}
+\newcommand{\cW}{\mathcal{W}}
+\newcommand{\cH}{\mathcal{H}}
+\newcommand{\cF}{\mathcal{F}}
+\newcommand{\tcF}{\widetilde{\cF}}
+\newcommand{\Exp}[1]{\mathbb{E}\left[ #1 \right]} 
+\newcommand{\ind}{\mathbb{I}}
+\newcommand{\real}{\mathbb{R}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\bS}{\mathbb{S}}
+\newcommand{\inpro}[2]{\langle #1, #2\rangle}
+\newcommand{\ip}[1]{\langle#1\rangle}
+\newcommand{\set}[2]{\left\{#1 \,\vert\, #2 \right\}}
+\newcommand{\lt}{\ell_t}
+\newcommand{\ttheta}{\tilde{\theta}}
+\newcommand{\tw}{\tilde{w}}
+\newcommand{\norm}[1]{\left\| #1 \right\|}
+\newcommand{\bd}{\mathrm{bd}}
+\newcommand{\inangle}[2]{(#1,#2)}
+\newenvironment{ass}[1][]{\begin{trivlist}\item[] \refstepcounter{assumption}%
+ {\bf Assumption\ \theassumption\ #1} \it}{%\par\nobreak\noindent\sl\ignorespaces}{%
+ \ifvmode\smallskip\fi\end{trivlist}}
+\newcommand{\aref}[1]{(\ref{#1})}
+\newenvironment{ass*}[1][]{\begin{trivlist}\item[] %
+ {\bf Assumption\  #1} }{%\par\nobreak\noindent\sl\ignorespaces}{%
+ \ifvmode\smallskip\fi\end{trivlist}}
+\newcommand{\uD}{\overline{D}}
+\newcommand{\lD}{\underline{D}}
+\DeclareMathOperator{\sgn}{sgn}
+% theorems/definitions
+\newtheorem{lemma}{Lemma}[section]
+\newtheorem{thm}[lemma]{Theorem}
+\newtheorem{claim}[lemma]{Claim}
+\newtheorem{cor}[lemma]{Corollary}
+\newtheorem{example}[lemma]{Example}
+\newtheorem{prop}[lemma]{Proposition}
+\theoremstyle{definition}
+\newtheorem{definition}[lemma]{Definition}
+\newtheorem{remark}[lemma]{Remark}
+\newtheorem*{solution}{Solution}
+\newtheorem{note}[lemma]{Note}
+\newtheorem{problem}[lemma]{Problem}
+\newtheorem{comm}[lemma]{Comment}
+\newcommand\numberthis{\addtocounter{equation}{1}\tag{\theequation}}
+\title{Fast Rates in Linear Prediction}
+\author{
+Ruitong Huang 
+\and 
+Tor Lattimore
+\and
+Andr\'as Gy\"orgy
+\and 
+Csaba Szepesv\'ari
+}
+\date{
+%Version: \svnrev\\
+%Date: \svndate\\
+%Last change: \svnauthor
+\today %\@ \time \Version 0.5 (r5322)
+}
+
+\begin{document}
+\maketitle
+\begin{abstract}
+We prove fast rates in linear prediction.
+\end{abstract}
+
+\section{Introduction}
+
+What is the problem studied?
+Online linear prediction.
+
+Who cares about this problem?
+Most basic learning setting.
+Prediction with expert advice is a special case.
+Online convex optimization reduces to online linear prediction after linearization.
+
+Our approach.
+We go back to the follow-the-leader (FTL) algorithm: 
+Choose the point in the constraint set that minimizes the sum of all loss functions encountered so far,
+a strategy that is also known as ``empirical risk minimization'' (ERM) in statistical learning.
+As is it well known, in the worst case,
+FTL suffers a linear regret (as noted, e.g., by \citet{hazan2007logarithmic}). 
+\todoc{Better reference? Do we need a reference at all?}
+However, for ``curved'' losses (e.g., exp-concave losses), FTL was shown to achieve small (logarithmic) regret,
+e.g., \citet{MF92,CBLu06:book,gaivoronski2000stochastic,hazan2007logarithmic}.
+In this paper we take a thorough look at FTL in the case when the losses are linear, 
+but the problem perhaps exhibits other regularities.
+The motivation comes from the simple observation, that, e.g., for prediction over the simplex, when
+the losses vectors are selected independently of each other from a distribution with a bounded support with a
+nonzero mean, FTL quickly locks onto selecting the loss-minimizing vertex of the simplex, achieving finite expected regret.
+Thus, we ask the question of whether there are regularities which allow FTL to achieve nontrivial performance
+guarantees.
+Another case of interest is when the decision, or constraint set, us ``curved''.
+As we will show, in this case, FTL may achieve logarithmic regret, similar to the case when the losses are curved.
+As we will show in an essentially matching lower bound, this regret bound must increase with the inverse
+of the norm of the mean of losses (i.e., small means makes the regret bound explode).
+We also show a simple result that adaptively interpolates between the worst case $O(\sqrt{n})$ regret
+and the smaller regret bounds.
+ 
+Other work looking at the curvature of the constraint set:
+In an optimization setting,  \citet{LePo66} shows that if the norm of the gradient of the objective function is uniformly lower bounded over the feasible set then for 
+ strongly convex feasible sets exponential rates are attainable.
+ More recently, \citet{garber2014faster} shows that
+for smooth, strongly convex functions, using Frank-Wolfe, $O(1/t^2)$ optimization error is attainable after $t$ iterations.
+
+\todoc[inline]{Here is the definition of the strong convexity of the domain:}
+Definition: The feasible set $\cW$ is $\alpha$-strongly convex:
+That is, for any $x,y\in \cW$, $\gamma\in [0,1]$, $B( \gamma x + (1-\gamma) y, \gamma(1-\gamma) \alpha \norm{x-y}^2 ) \subset \cW$.
+\todoc[inline]{How does this relate to our principal curvature constraint? This should be explained in the paper.}
+ 
+ 
+Interpolating between stochastic and adversarial settings: \citet{bubeck2012best}.
+\todoc[inline]{I think Rakhlin and Karthrik also write about this. What did they write? Cite them.}
+
+ 
+Huge literature on adaptive and fast rates, impossible to summarize here (and out of scope), but, e.g., 
+\citet{orabona2012beyond,vanerven2015fast,foster2015adaptive} review and unify many previous approaches.
+ 
+ 
+\if0
+From the paper of \citet{hazan2007logarithmic}, about FTL:
+Perhaps the most intuitive algorithm for online convex optimization can be described as follows: at iteration $t$, choose the best point so far, i.e. the point in the underlying convex set that minimizes the sum of all cost functions encountered thus far.
+Given the natural appeal of this algorithm, it was considered in the game theory literature for over $50$ years. It is not difficult to show that for linear cost functions, the FOLLOW THE LEADER (FTL) algorithm does not attain any non-trivial regret guarantee (in the worst case it can be $\Omega(T)$ if the cost functions are chosen adversarially). 
+However, \citet{Han57} proposed a randomized variant of FTL, called perturbed-follow-the-leader, which attained
+$O(\sqrt{T} )$ regret in the online game playing setting for linear functions over the simplex.
+As we show later, this regret bound is optimal. 
+\citet{MF92} extend the FTL approach to strictly convex cost functions over the simplex, 
+and prove that for such functions FTL attains regret which is logarithmic in the number of iterations. 
+Similar results were obtained by \citet{CBLu06:book}, and \citet{gaivoronski2000stochastic}.
+A natural question, asked explicitly by \citet{CO96}\todoc{I guessed this is the reference}, 
+\citet{KaVe03}, and others, is whether FOLLOW THE LEADER provides any non-trivial guarantee for curved (but not necessarily strictly convex) cost functions. 
+One application which is not covered by previous results is the problem of portfolio management.
+In this paper (Sect. 3.3) we answer this question in the affirmative, and prove that in fact FOLLOW THE LEADER attains optimal regret for curved functions.
+
+\citet{hazan2006logarithmic,hazan2007logarithmic}: Realizing strong convexity allows $\log(n)$ rates in online convex optimization. \todoc{What is the story with these two references? The COLT one has Kalai as an author, and he is gone from the MLJ paper.}
+
+
+Losses: $H$-strongly convex, $\alpha$-exp-concave, $G$-Lipschitz. Domain diameter: $D$.
+Results: $G^2/H \log(n)$ regret for OGD; $(\frac{1}{\alpha}+GD) d \log(n)$ for ONS and FTL; $\frac{d\log(n)}{\alpha}$ for CEWA.
+
+\if0
+\citet{bartlett2007adaptive}:
+Online convex optimization. Interpolating between $\log(n)$ and $\sqrt{n}$ rate using OGD.
+Learning rate is based on the sum of the strong convexity constant of losses so-far.
+
+\citet{kakade2009mind}:
+``We describe a primal-dual framework for the design and analysis of online strongly convex optimization algorithms. Our framework yields the tightest known logarithmic regret bounds for Follow-The-Leader and for the gradient descent algorithm proposed in Hazan et al. [2006]. We then show that one can interpolate between these two extreme cases (my note: ala \citet{bartlett2007adaptive}). In particular, we derive a new algorithm that shares the computational simplicity of gradient descent but achieves lower regret in many practical situations. Finally, we further extend our framework for generalized strongly convex functions.''
+\fi
+\fi
+
+
+\if0
+\citet{orabona2012beyond}:
+We prove logarithmic regret bounds that depend on the loss $L^*_T$ of the competitor rather than on the number $T$ of time steps. In the general on-line convex optimization setting, our bounds hold for any smooth and exp-concave loss (such as the square loss or the logistic loss). This bridges the gap between the $O(\ln T )$ regret exhibited by exp-concave losses and the $O( L^*_T )$ regret exhibited by smooth losses. 
+We also show that these bounds are tight for specific losses, thus they cannot be improved in general. 
+For online regression with square loss, our analysis can be used to derive a sparse randomized variant of the online Newton step, whose expected number of updates scales with the algorithmÕs loss. For online classification, we prove the first logarithmic mistake bounds that do not rely on prior knowledge of a bound on the competitorÕs norm.
+
+
+\citet{vanerven2015fast}:
+``Generalizing and unifying previous conditions in online and statistical learning under which fast learning is possible. 
+It is shows that most of these conditions are special cases of a single, unifying condition, that comes in two forms: the central condition for ÔproperÕ learning algorithms that always output a hypothesis in the given model, and stochastic mixability for online algorithms that may make predictions outside of the model. We show that under surprisingly weak assumptions both conditions are, in a certain sense, equivalent. ''
+%The central condition has a re-interpretation in terms of convexity of a set of pseudoprobabilities, linking it to density estimation under misspecification. For bounded losses, we show how the central condition enables a direct proof of fast rates and we prove its equivalence to the Bernstein condition, itself a generalization of the Tsybakov margin condition, both of which have played a central role in obtaining fast rates in statistical learning. Yet, while the Bernstein condition is two-sided, the central condition is one-sided, making it more suitable to deal with unbounded losses. In its stochastic mixability form, our condition generalizes both a stochastic exp-concavity condition identified by Juditsky, Rigollet and Tsybakov and VovkÕs notion of mixability. Our unifying conditions thus provide a substantial step towards a characterization of fast rates in statistical learning, similar to how classical mixability characterizes constant regret in the sequential prediction with expert advice setting.
+\citet{foster2015adaptive}:
+ general framework for studying adaptive regret bounds in the online learning framework, including model selection bounds and data-dependent bounds.
+They recover adaptive rates in literature, including variance bounds, quantile bounds, localization-based bounds, and fast rates for small losses. \todoc{Add citations from that paper's section 1.2.}
+ \fi
+
+\todoc[inline]{My note:}
+\citet{MF92}  considers the following assumption (dropping measurability and other technical requirements):
+Let $\ell: \cF \times \cW \to [0,\infty)$ be a fixed loss function.
+For a probability distribution $P$ over $\cF$, let $w^*(P) = \arg\min_{w\in \cW} \int \ell(f,w) P(df)$.
+Further, for $\alpha\in [0,1]$, $f\in \cF$, let $P_{\alpha,x} = P+ \alpha( \delta_f - P)$, where $\delta_f$ is the Dirac measure that puts all the weight to $f$. (Note that $P_{\alpha,x}-P = \alpha (\delta_f-P)$.)
+Then, the assumption is that for some $L>0$ and for all $f\in \cF$,
+ $|\ell(f, b^*(P) ) - \ell( f, b^*(P_{\alpha,f}))| \le \alpha L$ (a form of a Lipschitz condition).
+Under this assumption they show that FTL achieves logarithmic regret.
+\todoc[inline]{How does this assumption relate to our smoothness assumption?}
+ 
+
+
+\section{Notation and problem setting}
+Let $\cF$ be a non-empty, convex, compact set in $\R^d$.
+\begin{algorithm}[H]
+\caption{Online Learning Protocol}
+\label{alg:OnlineLearning}
+\begin{algorithmic}[1]
+\FOR{$t = 1 \text{ to } n$} 
+\STATE The learner predicts $w_t\in \cW$
+\STATE The adversary picks $f_t\in \cF$ 
+\STATE The learner suffers loss $\ell_t(w_t) = \langle f_t, w_t\rangle$ and learns $f_t$.
+\ENDFOR
+\end{algorithmic}
+\end{algorithm}
+\[
+R_n = \sum_{t=1}^{n} \lt(w_t) - \min_{w\in \cW}\sum_{t=1}^{n} \lt(w).
+\]
+\section{Non-stochastic analysis of FTL}
+Assume that $\cW$ is a non-empty, closed convex subset of $\real^d$. 
+\todoc[inline]{This was ``convex body''. 
+Perhaps the most common definition of what a convex body says that 
+it is a compact set with non-empty interior.  
+Some would say it is a closed convex set. Anyhow, not sure we need to mess with ``convex bodies''.
+}
+Let $\Theta_t = -\frac1t \sum_{i=1}^t f_i$ be the negative average of the first $t$ vectors
+in $(f_t)_{t=1}^n$ ($f_t\in \R^d$),
+and let $\Phi(\Theta) = \max_{w\in\cW} \langle w, \Theta\rangle$ be the support function of $\cW$. 
+For convenience, we also define $\Theta_0 = 0$.
+\todoc[inline]{Fun fact: The support function $\Phi$ satisfies $\frac12 \Phi^2 = \mathcal{L}( \frac12 \gamma^2 )$ where $\gamma$ is the gauge function of $\Theta$. See Theorem 2.4.2 \href{https://smartech.gatech.edu/bitstream/handle/1853/24689/white_edward_c_200808_mast.pdf}{here}.
+Sometimes $g \mapsto \mathcal{L}( \frac12 g^2 )$ is called the generalized Legendre transform.
+With this terminology, $\Phi$ is the generalized Legendre transform of the gauge function $\gamma$ of $\Theta$.
+}
+Since $\cW$ is compact, the optimal $w$ of $\max_{w\in\cW} \inpro{w}{\Theta}$ is attainable.
+We let $\partial f(x)$ denote the subdifferential of a convex function $f$ at $x$,
+i.e., $\partial f(x) = \set{\theta\in \R^d}{f(x') \ge f(x) + \ip{\theta, x'-x} \,\, \forall x'\in \R^d }$.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{prop} 
+Let $\cW\ne \emptyset$ be convex and closed.
+Fix $\Theta$ and let $\cZ:= \set{w\in \cW}{\inpro{w}{\Theta} =  \Phi(\Theta) }$.
+Then, $\partial \Phi(\Theta) = \cZ$ and in particular
+$\Phi(\Theta)$ is differentiable at $\Theta$ if and only if 
+$\max_{w\in\cW} \inpro{w}{\Theta}$ has a unique optimizer.
+In this case, $\nabla \Phi(\Theta) = \arg\max_{w\in \cW} \ip{w,\Theta}$.
+\end{prop}
+\begin{proof}
+Under the extra condition that $\cW$ is compact
+the result follows from Danskin's theorem (e.g., Proposition B.25 of \citealt{bertsekas99nonlinear}).
+However, compactness is not required. \todoc{In fact, I don't get why Bertsekas needs it for this part of the statement. He may need it elsewhere.}
+For completeness, we provide a short, direct proof. 
+\todoc{Probably delegate to the appendix.}
+We need to show that 
+$\cZ = \partial \Phi(\Theta)$ where recall that
+\begin{align*}
+\partial \Phi(\Theta)= \set{u\in \R^d}{ \Phi(\Theta) + \inpro{u}{\cdot-\Theta} \le \Phi(\cdot)}
+= \set{u\in  \R^d}{ \Phi(\Theta)  \le \inpro{u}{\Theta} + \Phi(\cdot) - \inpro{u}{\cdot} }\,.
+\end{align*}
+Since $\cZ \subset \cW$, 
+if $w\in \cZ$, $\Phi(\Theta') \ge \ip{w,\Theta'}$ for any $\Theta'$ by the definition of $\Phi$.
+Hence, $\Phi(\theta) = \ip{w,\Theta} \le \ip{w,\Theta} + \Phi(\Theta')-\ip{w,\Theta'}$ for any $\Theta'$, implying that $w\in \partial \Phi(\Theta)$.
+
+On the other hand, if $w \in \partial \Phi(\Theta)$, $\Phi(\Theta) \le \ip{w,\Theta}$
+since $\Phi(0) = \ip{w,0} = 0$. 
+%Now notice that  $\Phi(\lambda \Theta) = \lambda \Phi(\Theta)$ holds for any $\lambda>0$.
+%Using this and that  $\Phi(\Theta') \ge \Phi(\Theta) + \ip{w,\Theta'-\Theta}$ with $\Theta'=2\Theta$,
+%we get $\ip{w,\Theta}\le \Phi(\Theta)$. Hence, $\ip{w,\Theta} = \Phi(\Theta)$.
+Now, if $w\not\in \cW$, since $\cW$ is closed, $\cZ$ is also closed.
+Hence, by the strict separation theorem (applied to $\{w\}$, a convex compact set,
+and $\cZ$, a convex closed set),
+ there exists $\rho\in \R^d$ such that $\ip{z,\rho} < \ip{w,\rho}$ for all $z\in \cZ$.
+ Let $\Theta' = \Theta +  \rho$.
+ Then, $\Phi(\Theta') = \max_{u\in \cW} \ip{u,\Theta} +  \ip{u,\rho}
+ < \Phi(\Theta) +  \ip{w,\Theta'-\Theta} \le\Phi(\Theta')$, a contradiction.
+Hence, $w\in \cW$.
+\end{proof}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Let $w_t$ be the  prediction of the FTL algorithm in round $t$:
+\begin{align*}
+w_t =  \arg\min_{w\in\cW} \sum_{i=1}^{t-1} \ip{ w, f_i } = \arg\min_{w\in\cW} \ip{ w, -\Theta_{t-1} }
+= \arg\max_{w\in \cW} \ip{w,\Theta_{t-1}}\,.
+\end{align*}
+By the previous proposition,
+when $\Phi$ is differentiable at $\Theta_{t-1}$,
+$w_t = \nabla \Phi(\Theta_{t-1})$.
+
+%Such property is also exploited in the Mirror decent algorithm of which FTL is a special example.
+The next proposition shows that the regret of FTL is in fact tied to the smoothness of the function $\Phi$.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{prop} \todoc{There exists exact regret expressions like this in the literature. We'll need to point out the similarities and differences to these.}
+\label{prop:R_nBregmanDivergence}
+If $\Phi$ is differentiable at $\Theta_1, \ldots, \Theta_n$,  \todoc{There is an issue that $\Phi$ is not differentiable at $\Theta_0 = 0$.}
+\begin{align}
+\label{eq:regreteq}
+R_n = \sum_{t=1}^{n} t\,D_{\Phi}(\Theta_t,\Theta_{t-1})\,,
+\end{align}
+where $D_{\Phi}(\theta_1, \theta_2) = \Phi(\theta_1) - \Phi(\theta_2) - \langle \nabla\Phi(\theta_2), \theta_1 - \theta_2\rangle$ is the Bregman divergence of $\Phi$.
+\end{prop}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{proof}
+Let $\Theta_0\in \R^d$ be arbitrary. We have \todoc{Flip the order of the arguments, i.e., $w$ should be the first, $\theta$ the second.}
+\begin{align*}
+R_n & = \sum_{t=1}^{n} \inpro{f_t}{w_t} - \min_{w\in \cW}\sum_{t=1}^{n} \inpro{f_t}{w} \\
+	& = \max_{w\in \cW} \inpro{\sum_{t=1}^{n}-f_t}{w} + \sum_{t=1}^{n} \inpro{f_t}{w_t} \\
+	& = n\Phi(\Theta_n) - \sum_{t=1}^{n} \inpro{-f_t}{w_t} \numberthis \label{eq:eq1}\\
+	& = n\Phi(\Theta_n) - \sum_{t=1}^{n} \inpro{t\Theta_t-(t-1)\Theta_{t-1}}{w_t} \\	
+	& = n\Phi(\Theta_n) - \left(\sum_{t=1}^{n} t\inpro{\Theta_t-\Theta_{t-1}}{w_t} + \sum_{t=1}^{n} \inpro{\Theta_{t-1}}{w_t} \right) \\	
+	& = n\Phi(\Theta_n) - \left(\sum_{t=1}^{n} \Phi(\Theta_{t-1})+ \sum_{t=1}^{n} t\inpro{\Theta_t-\Theta_{t-1}}{\nabla \Phi(\Theta_{t-1})} \right) \\
+	& = n\Phi(\Theta_n) - \left(\sum_{t=1}^{n} \Phi(\Theta_{t-1})
+	+ \sum_{t=1}^{n} t\left( \Phi(\Theta_t) - \Phi(\Theta_{t-1}) - D_{\Phi}(\Theta_t, \Theta_{t-1})\right) \right)  \numberthis \label{eq:eq2}\\	
+	& = \sum_{t=1}^{n} t D_{\Phi}(\Theta_t, \Theta_{t-1}) + n\Phi(\Theta_n) + \sum_{t=1}^{n}(t-1)\Phi(\Theta_{t-1}) - \sum_{t=1}^{n}t\Phi(\Theta_t) \\ 
+	& = \sum_{t=1}^{n} t D_{\Phi}(\Theta_t, \Theta_{t-1}).
+\end{align*}
+Here, the equality in \eqref{eq:eq1} is due to the definition of $\Phi$, while the equality in \eqref{eq:eq2} is due to the definition of Bregman divergences.
+\end{proof}
+When $\Phi$ is non-differentiable at some of the points $\Theta_1,\dots,\Theta_n$, the equality in the above proposition can be replaced by inequalities.
+For this, define the upper and lower Bregman divergences for $\Phi$:
+\begin{align*}
+\uD_{\Phi}(\theta_1, \theta_2) 
+& = \sup_{w\in \partial \Phi(\theta_2)} \Phi(\theta_1) - \Phi(\theta_2) - \ip{ w, \theta_1 - \theta_2}\,,\\
+\lD_{\Phi}(\theta_1, \theta_2) 
+& = \inf_{w\in \partial \Phi(\theta_2)} \Phi(\theta_1) - \Phi(\theta_2) - \ip{ w, \theta_1 - \theta_2}\,.
+\end{align*}
+The following holds then:
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{prop} 
+\label{prop:R_nBregmanDivergence2}
+We have
+\begin{align}
+\label{eq:regreteq_alt}
+\sum_{t=1}^{n} t\,\lD_{\Phi}(\Theta_t,\Theta_{t-1})
+\le
+R_n 
+\le \sum_{t=1}^{n} t\,\uD_{\Phi}(\Theta_t,\Theta_{t-1})\,.
+\end{align}
+\end{prop}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+The proof follows the same steps as the proof of the previous proposition, except that 
+when $w_t$ was replaced by $\nabla \Phi(\Theta_{t-1})$, now
+we just  keep $w_t$ up to the end, when we take the infimum (supremum)
+over all elements of $\partial \Phi(\Theta_{t-1})$ to get the lower (respectively, upper)
+bound, exploiting that $w_t \in \partial \Phi(\Theta_{t-1})$.
+
+
+\todoc[inline]{Alternate result/proof, which suffices for our purposes:}
+\begin{prop}
+\label{prop:regretabel}
+The regret $R_n$ of FTL satisfies
+\begin{align*}
+R_n & =  \sum_{t=1}^n t\,\ip{ w_{t+1}-w_t,\theta_t}  \,.
+\end{align*}
+\end{prop}
+\begin{proof}
+Recall that the summation by parts formula states that for any $u_1,v_1,\dots,u_{n+1},v_{n+1}$ real numbers,
+\begin{align*}
+\sum_{t=1}^n u_t\,(v_{t+1}-v_t) = (u_{t+1}v_{t+1}-u_1 v_1) - \sum_{t=1}^n (u_{t+1}-u_t)\,v_{t+1} \,.
+\end{align*}
+We have
+\begin{align*}
+R_n 
+& = -\sum_{t=1}^n \ip{w_t,t\theta_t - (t-1)\theta_{t-1}} + \ip{w_{n+1},n\theta_n}  \\
+& = - \left\{ 
+		\bcancel{\ip{w_{n+1},n\theta_n}} - 0 - \sum_{t=1}^n \ip{w_{t+1}-w_t,t\theta_t}  \right\} +
+		\bcancel{\ip{w_{n+1},n\theta_n}}\,.
+		& (u_t:=w_{t,\cdot}, \,\,v_{t+1} := t\theta_{t,\cdot})
+\end{align*}
+\end{proof}
+
+
+The previous propositions relate 
+the regret of FTL to the smoothness of the support function $\Phi$ 
+and how much the averages $\Theta_t$ move.
+The next result is a straightforward bound on how much $\Theta_t$ can move in 
+an arbitrary norm $\norm{\cdot}$ of $\R^d$.
+\begin{prop}
+\label{prop:avgdiff}
+\[
+\|\Theta_t - \Theta_{t-1}\| \le \frac{2}{t}M\,, 
+\]
+where $M = \max_{f\in\cF} \|f\|$ is a constant that depends on $\cF$ and the norm $\norm{\cdot}$.
+\end{prop}
+\begin{proof}
+The result follows by a straightforward calculation:
+\begin{align*}
+\|\Theta_t - \Theta_{t-1} \| & = \left\|\frac{1}{t-1}\sum_{i=1}^{t-1} f_i - \frac{1}{t}\sum_{i=1}^{t} f_i \right\| 
+	 = \left\| \sum_{i=1}^{t-1} \left( \frac{1}{t-1} - \frac{1}{t}\right) f_i- \frac{1}{t}f_t\right\| \\
+	& \le \left\| \sum_{i=1}^{t-1} \left( \frac{1}{t-1} - \frac{1}{t}\right) f_i \right\| + \left\| \frac{1}{t}f_t\right\| 
+	 = \left\| \sum_{i=1}^{t-1} \frac{1}{t(t-1)} f_i \right\| + \left\| \frac{1}{t}f_t\right\| \\
+	 & = \frac{1}{t} \left\| \frac{1}{t-1} \sum_{i=1}^{t-1} f_i\right\| + \frac{1}{t}\left\|f_t\right\| 
+	 \le \frac{2}{t}M\,.
+\end{align*}
+\end{proof}
+Note that  the curvature of the boundary of $\cW$ determines the smoothness of the support function. 
+Denote the boundary of $\cW$ by $\bd(\cW)$.
+\begin{prop}
+\label{prop:R_curvesurface}
+Let $M = \max_{f\in \cF} \norm{f}_2$ and assume that $\Phi$ is differentiable at $\Theta_1,\dots,\Theta_t$.
+\todoc{This result requires that $d\ge 3$ or something like this. Check and state condition.}
+Assume that the principal curvatures of the surface $\bd(\cW)$ \todoc{A definition will be necessary.}
+are all greater than $\lambda_0$ for some constant $\lambda_0>0$, and $\|\Theta_t\|_2\ge L >0$. Then
+\[
+R_n \le \frac{2M^2}{\lambda_0 L}(1+ \log(n))\,.
+\]
+\end{prop}
+\begin{proof}
+Fix  $\theta_1, \theta_2 \in \real^d$ such that $\Phi$ is differentiable at $\theta_2$
+and let $v_i = \arg\max_{w\in\cW}\inpro{w}{\theta_i}$. \todoc{Note that this notation contradicts our convention 
+that $w_t = \arg\max_{w\in \cW}\ip{w,\theta_{t-1}}$!}
+\begin{align*}
+D_{\Phi}(\theta_1, \theta_2) & = \inpro{v_1}{\theta_1} - \inpro{v_2}{\theta_2} - \inpro{\nabla\Phi(\theta_2)}{\theta_1 - \theta_2} \\
+	& = \inpro{v_1}{\theta_1} - \inpro{v_2}{\theta_2} - \inpro{v_2}{\theta_1 - \theta_2} \\
+	& = \inpro{v_1 - v_2}{\theta_1}\,. \numberthis \label{eq:middlew}
+\end{align*} 
+Below we will show that
+\begin{align*}
+\inpro{v_1  - v_2}{\theta_1} 
+	& \le \frac{1}{2\lambda_0} \frac{\|\theta_1 - \theta_2\|_2^2}{\|\theta_2\|_2}\,.
+	 \numberthis\label{eq:middletheta}
+\end{align*}
+Combining this inequality with~\eqref{eq:middlew} and \eqref{eq:regreteq}, noting that
+thanks to our assumption that $\lambda_0>0$ and 
+$\Phi$ is differentiable at $(\Theta_t)_{t=1,\dots,n}$,
+we get
+\if0
+\begin{align*}
+D_{\Phi}(\theta_1, \theta_2) & = \inpro{w_1 - w_2}{\theta_1} 
+	 = \|\theta_1\|_2\inpro{w_1  - w_2}{\ttheta_1} 
+	 \le  \|\theta_1\|_2 \frac{1}{2\lambda_0} \frac{\|\theta_1 - \theta_2\|_2^2}{\|\theta_1\|_2\|\theta_2\|_2} 
+	 = \frac{1}{2\lambda_0} \frac{\|\theta_1 - \theta_2\|_2^2}{\|\theta_2\|_2}\,.
+\end{align*}
+Therefore,
+\fi
+\[
+R_n = \sum_{t=1}^{n} tD_{\Phi}(\Theta_t,\Theta_{t-1}) \le \sum_{t=1}^{n} \frac{t}{2\lambda_0} \frac{\|\Theta_t - \Theta_{t-1}\|_2^2}{\|\Theta_{t-1}\|_2} \le \frac{2M^2}{\lambda_0}\sum_{t=1}^{n} \frac{1}{t\|\Theta_{t-1}\|_2} \le \frac{2M^2}{\lambda_0L} \sum_{t=1}^{n} \frac{1}{t}
+\le \frac{2M^2}{\lambda_0L} (1+\log(n))\,,
+\]
+where the second inequality is due to \cref{prop:avgdiff}.
+Since the above inequality is the statement to be shown,
+to finish the proof, it remains to show~\eqref{eq:middletheta}.
+
+The following elementary lemma relates the cosine of the angle between $\theta_1$ and $\theta_1$, which we denote by $\cos\inangle{\theta_1}{\theta_2}$ to the squared normalized distance between 
+the two vectors, thereby reducing our problem to bounding the cosine of this angle.
+\begin{lemma}
+\label{lem:upperboundcos}
+For any vectors $\theta_1, \theta_2 \in \real^d$,
+\begin{align}
+1- \cos \inangle{\theta_1}{\theta_2} \le \frac{1}{2} \frac{\|\theta_1 - \theta_2\|_2^2}{\|\theta_1\|_2\|\theta_2\|_2}.
+\label{eq:angleineq}
+\end{align}
+\end{lemma}
+\begin{proof}[Proof of \cref{lem:upperboundcos}]
+Note that $2\|\theta_1\|_2\|\theta_2\|_2\cos\inangle{\theta_1}{\theta_2} = 2\inpro{\theta_1}{\theta_2}$.
+Therefore, \eqref{eq:angleineq} is equivalent to 
+$ 2\|\theta_1\|_2\|\theta_2\|_2 - 2\inpro{\theta_1}{\theta_2} \le \|\theta_1 - \theta_2\|_2^2 $,
+which, by algebraic manipulations, is itself equivalent to $0 \le (\|\theta_1\|_2-\|\theta_2\|_2)^2$.
+\if0
+\begin{align*}
+	& 1- \cos \inangle{\theta_1}{\theta_2} \le \frac{1}{2} \frac{\|\theta_1 - \theta_2\|_2^2}{\|\theta_1\|_2\|\theta_2\|_2} \\
+\Longleftrightarrow \quad & 2\|\theta_1\|_2\|\theta_2\|_2 - 2\inpro{\theta_1}{\theta_2} \le \|\theta_1 - \theta_2\|_2^2 \\
+\Longleftrightarrow \quad &  2\|\theta_1\|_2\|\theta_2\|_2 - 2\inpro{\theta_1}{\theta_2} \le \|\theta_1\|_2^2 + \|\theta_2\|_2^2 - 2\inpro{\theta_1}{\theta_2} \\
+\Longleftrightarrow \quad & 2\|\theta_1\|_2\|\theta_2\|_2 \le \|\theta_1\|_2^2 + \|\theta_2\|_2^2 \\
+\Longleftrightarrow \quad & 0 \le (\|\theta_1\|_2-\|\theta_2\|_2)^2
+\end{align*}
+\fi
+\end{proof}
+Let $\ttheta_i = \frac{\theta_i}{\|\theta_i\|_2}$ for $i=1,2$.
+The angle between $\theta_1$ and $\theta_2$ is the same as the angle between 
+the normalized vectors $\ttheta_1$ and $\ttheta_2$.
+To calculate the cosine of the angle between $\ttheta_1$ and $\ttheta_2$,
+let $P$ be a plane spanned by $\ttheta_1$ and $w_2 - w_1$ and passing through $w_1$
+($P$ is uniquely determined if $\ttheta_1$ is not parallel to $w_2-w_1$;
+if there are multiple planes, just pick any of them). \todoc{Can it be that these are parallel?}
+Consider a curve $\gamma(s)$ on the surface from $w_1$ to $w_2$ that is defined by the intersection of $\bd(\cW)$ and $P$ and parametrized by its curve length $s$.  \todoc{A figure probably would be nice to have.}
+Let $\bS^{d-1}$ denote the (Euclidean) unit sphere in $\R^d$ and
+let $u_\cW\, : \, \bd(\cW) \rightarrow \bS^{d-1}$ assign to each point 
+element $w$ of the surface of $\cW$  the outer normal vector to $\cW$ at $w$ (thus, $u_\cW$ is what is known as the ``Gauss map'' of the surface of $\cW$).
+Then,
+\begin{align*}
+\cos \inangle{\ttheta_1}{\ttheta_2} & = \inpro{\ttheta_2}{\ttheta_1} \\
+	& = 1+ \inpro{\ttheta_2 - \ttheta_1}{\ttheta_1} \\
+	& = 1+ \inpro{\int_{\gamma} u_\cW'(w) \text{d}w}{\ttheta_1}\numberthis \label{eq:eq3} \\
+	& = 1+ \inpro{\int_{0}^{l} u_\cW'(w(s))w'(s)\text{d}s}{\ttheta_1} \numberthis \label{eq:eq4} \\
+	& = 1+ \int_{0}^{l} \inpro{u_\cW'(w(s))w'(s)}{\ttheta_1} \text{d}s\,, \numberthis \label{eq:cosint}
+\end{align*}
+where the integral in Equation~\eqref{eq:eq3} is a curve integral on $\gamma$, the integral in Equation~\eqref{eq:eq4} is on the length parameter $s$, and $l$ is the length of the curve $\gamma$ between $w_1$ and $w_2$.
+
+Note that for any $w$ on the curve $\gamma$, $w'(s)$ is a unit vector parallel to $P$. 
+Also $u_\cW'$ is the so-called Weingarten map,
+which is known to enjoy the property that 
+for any vector $w$ of the boundary of $\cW$ and vector $v$ that is tangent to $\bd(\cW)$ at $w$,
+$u_\cW'(w)v$ is orthogonal to $u_\cW(w)$. \todoc{A figure would probably help.}
+Therefore, 
+\[
+N = u_\cW'(w(s))w'(s) -  \underbrace{\inpro{u_\cW'(w(s))w'(s)}{w'(s)}}_{\alpha} w'(s) 
+\] 
+is orthogonal to the plane $P$ (note that $\alpha w'(s)$ is just the projection of 
+$u_\cW'(w(s))w'(s)$ to $w'(s)$ since $w'(s)$ is a unit vector).  \todoc{Does thus use that $u_\cW(w)$ is parallel to the plane $P$? Why is this true? If $u_{\cW}(w)$ was not parallel to $P$
+then $N$ could have a component in the plane.
+}
+Thus, using $\alpha \ge \lambda_0$, \todoc{Why does this hold? We should list the facts we use in the appendix and cite some sources.}   $\inpro{N}{\ttheta_1}=0$ and that 
+$\inpro{w'(s)}{\ttheta_1} \le 0$, \todoc{This may worth proving.} we get
+\[
+\inpro{u_\cW'(w(s))w'(s)}{\ttheta_1} = \alpha \inpro{w'(s)}{\ttheta_1} 
+%= \inpro{u_\cW'(w)w'(s)}{w'(s)} \inpro{w'(s)}{\ttheta_1} 
+\le \lambda_0 \inpro{w'(s)}{\ttheta_1}\,.
+\]
+Plugging this into~\eqref{eq:cosint} we get
+\begin{align*}
+\cos \inpro{\ttheta_1}{\ttheta_2}   %&=  1+ \int_{0}^{l} \inpro{u_\cW'(w)w'(s)}{\ttheta_1} \text{d}s \\
+	& \le 1+ \lambda_0\, \int_{0}^{l} \, \inpro{w'(s)}{\ttheta_1} \text{d}s 
+	    = 1+ \lambda_0 \inpro{\int_{0}^{l} w'(s) \text{d}s}{\ttheta_1} 
+	  = 1 - \lambda_0 \inpro{w_1  - w_2}{\ttheta_1}\,.
+\end{align*}
+Reordering and combining with~\eqref{eq:angleineq} we obtain
+\begin{align*}
+\inpro{w_1  - w_2}{\ttheta_1} & \le \frac{1}{\lambda_0} \left( 1- \cos \inpro{\ttheta_1}{\ttheta_2} \right) 
+	 = \frac{1}{\lambda_0} \left( 1- \cos \inpro{\theta_1}{\theta_2} \right) 
+	 \le \frac{1}{2\lambda_0} \frac{\|\theta_1 - \theta_2\|_2^2}{\|\theta_1\|_2\|\theta_2\|_2}\,.
+	% \numberthis\label{eq:middletheta},
+\end{align*}
+Multiplying both sides by $\norm{\theta_1}_2$ gives~\eqref{eq:middletheta}, thus, finishing the proof.
+\end{proof}
+
+Based on the above result, logarithmic regret can be recovered for particular cases of $\cW$ based on their principle curvatures.
+\todoc{Give $\lambda_0$. Maybe for ellipsoids?}
+\begin{cor}
+Assume that  $\|\Theta_t\|_2\ge L >0$ for $0\le t\le T$.
+\begin{itemize}
+\item If $\cW = \set{w}{\|w\|_2\le r}$, then the smallest principle curvature  $\lambda_0=\frac{1}{r}$, and thus $R_n = O(\log n)$.
+\item If $\cW = \set{w}{w\top M w\le 1 \text{ for some positive definite matrix } M}$, then the smallest principle curvature $\lambda_0=\sqrt{\lambda_{\min}(M)}$ where $\lambda_{\min}(M)$ is the minimal eigenvalue of $M$, and thus $R_n = O(\log n)$.
+\item If $\cW$ is a cylinder, then $\lambda_0 = 0$, and \cref{prop:R_curvesurface} does not cover this case.
+\item If $\cW = \set{w}{\phi(w)\le 1 \text{ for some convex function } \phi(x) \text{ that is second order differntial continuous.}}$, 
+then the smallest principle curvature $\lambda_0=\min_{w\in\text{bd}\cW}\min_{v\,:\,\|v\|_2=1, v\perp \phi'(w) }\frac{v^{\top}\cH(\phi(w))v}{\|\phi'(w)\|_2}$ where $\cH(\phi(w))$ is the Hessian matrix of $\phi$ at $w$, 
+and thus $R_n = O(\log n)$.
+\end{itemize}
+\end{cor}
+\cref{prop:R_curvesurface} provides an upper bound for the regret of FTL when $\bd(\cW)$ is ``curved''.
+The following proposition characterize the regret of FTL when $\cW$ is a polyhedron, which has a flat boundary and thus \cref{prop:R_curvesurface} is not applicable. 
+\begin{prop}
+	\label{prop:regretpolyhedron}
+	Assume that $\cW$ is a polyhedron
+	and that $\Phi$ is differentiable at $\Theta_i$, $i= 1, \ldots, n$. 
+	Let $w_t = \arg\max_{w\in\cW} \inpro{w}{\Theta_{t-1}}$,
+	$W = \sup_{w_1,w_2\in\cW}\|w_1 - w_2\|_*$ and $F = \sup_{f_1,f_2\in \cF} \norm{f_1-f_2}$.
+	\todoc{Introduce dual norm in common notation section.}
+	 Then the regret of FTL is 
+	\[
+	R_n \le W\, \sum_{t=1}^{n} t \,\ind(w_t\neq w_{t-1})  \|\Theta_t - \Theta_{t-1}\| \le FW\,\sum_{t=1}^{n} \ind(w_t\neq w_{t-1})\,.
+	\]
+\end{prop}
+\begin{proof}
+	From Equation~\eqref{eq:middlew}, $D_\Phi(\theta_1, \theta_2) = \inpro{v_1-v_2}{\theta_2}$, where $v_i = \arg\max_{w\in\cW} \inpro{w}{\theta_i}$.
+	Moreover, 
+	\begin{align*}
+	\inpro{v_1-v_2}{\theta_1} & = \inpro{v_1}{\theta_1} - \inpro{v_1}{\theta_2} + \inpro{v_1}{\theta_2} - \inpro{v_2}{\theta_2} + \inpro{v_2}{\theta_2} -\inpro{v_2}{\theta_1} \\
+	& \le \inpro{v_1}{\theta_1} - \inpro{v_1}{\theta_2} + \inpro{v_2}{\theta_2} -\inpro{v_2}{\theta_1} \numberthis \label{eq:eq211}\\
+	& = \inpro{v_1 - v_2}{\theta_1 - \theta_2} \\
+	& \le W\ind(v_1\neq v_2)\|\theta_1 - \theta_2 \|,
+	\end{align*}
+	where inequality~\eqref{eq:eq211} is because $\inpro{v_1}{\theta_2} - \inpro{v_2}{\theta_2} \le 0$.
+	Therefore, by \cref{prop:avgdiff}, 
+	\begin{align*}
+	R_n & = \sum_{t=1}^{n} t D_{\Phi}(\Theta_t, \Theta_{t-1}) 
+	 \le W\,\sum_{t=1}^{n} t\, \ind(w_t\neq w_{t-1})  \|\Theta_t - \Theta_{t-1}\| 
+	 \le FW\,\sum_{t=1}^{n} \ind(w_t\neq w_{t-1})\,.
+	\end{align*}
+\end{proof}
+\begin{comm}
+	\cref{prop:regretpolyhedron} bounds the regret of FTL by the number of switches of the maximizers $\sum_{t=1}^{n} \ind(w_t\neq w_{t-1})$.
+\end{comm}
+\begin{comm}
+	Note that since $\cW$ is a polyhedron, $w_t$ is attained at the vertices, and the graph of the function $\Phi$ is a polyhedral cone. Further,
+	$\ind(w_t\neq w_{t-1})$ is the event when the ``leader'' switches, 
+	i.e., when $\Theta_t$ and $\Theta_{t-1}$ belong to different linear regions corresponding to different linear pieces of the graph of $\Phi$.
+\end{comm}
+\begin{cor}[Stochastic setting]
+	\label{cor:stocPolyhedron}
+	Assume that $\{f_t\}_{1\le t \le n}$ is an i.i.d. sequence of random variables 
+	such that $\Exp{f_i} = \mu$ and $\|f_i\|_\infty \le M$. Let  $W = \sup_{w_1,w_2\in \cW} \norm{w_1-w_2}_1$.
+	Further assume that there exists a constant $r > 0$ 
+	such that $\Phi$ is differentiable for any $\nu$ such that $\|\nu-\mu\|_\infty \le r$. 
+	\todoc{We should probably explain the intuitive meaning of this. Maybe replace this with something 
+	more intuitive in fact.. $r$ should be the radius of the largest ball such that $\nu$ and $\mu$ are on the same
+	face of $\cW$. Then we won't need $\Phi$ indeed.}
+	Then, % there exists a constant $C$, such that 
+	\[
+		\Exp{R_n} \le 2MW \, (1+4d M^2/r^2 )\,.
+%	O(\sum_{t=1}^{n} \Pr(-\Theta_t \notin V)) = O(1).
+	\]
+\end{cor}
+\begin{proof}
+	Let $V = \set{\nu}{\|\nu - \mu\|_\infty\le r}$.
+	Since the graph of the function $\Phi$ is the surface of a polyhedral cone, 
+	$\set{(\theta, \Phi(\theta))}{\theta\in V}$
+	is a subset of a linear subspace.
+	Therefore, for $-\Theta_t, -\Theta_{t-1} \in V$, 
+	\[
+	%\nu_1 = \nu_2, \text{ and thus }
+	 D_\Phi(\Theta_t, \Theta_{t-1}) = 0\,,
+	\]
+	and thus also $w_{t+1}=w_t$ by the identity $D_\Phi(\Theta_t,\Theta_{t-1}) = \ip{w_{t+1}-w_t,\Theta_t}$.
+	\todoc{This identify could be stated earlier and here we should refer to it.}
+	Hence, by \cref{prop:regretpolyhedron},
+	\[
+	\Exp{R_n} \le 2MW\,\sum_{t=1}^{n} \Pr(-\Theta_t,-\Theta_{t-1} \notin V)
+	 \le 4MW\,(1+\sum_{t=1}^{n} \Pr(-\Theta_t \notin V))\,.
+	\]
+	On the other hand, note that $\|f_i\|_\infty\le M$.
+	Then 
+	\begin{align*}
+	\Pr(-\Theta_t \notin V) 
+	    & = \Pr\left( \norm{\frac{1}{t} \sum_{i=1}^{t} f_i - \mu}_\infty \ge r\right)
+%		& \le \Pr\left( \|\frac{1}{t} \sum_{i=1}^{t} f_i - \mu\|_\infty \ge \frac{r}{\sqrt{d}}\right) \\
+		 \le \sum_{j=1}^{d} \Pr\left( \left|\frac{1}{t} \sum_{i=1}^{t} f_{i,j} - \mu_j\right| \ge r \right) 
+%		& \le 2 \sum_{j=1}^{d} \text{exp}\left( -\frac{tr^2}{2M^2}\right) \numberthis \label{eq:eq212}\\
+		 \le 2d\text{ exp}\left( -\frac{tr^2}{2M^2}\right)\,,
+	\end{align*}
+	where the last inequality
+	%~\eqref{eq:eq212} 
+	is due to the Hoeffding's inequality.
+	Now, using that for $\alpha>0$, $\sum_{t=1}^n \exp(-\alpha t ) \le \int_0^n \exp(-\alpha t ) dt 
+%	= [\frac{\exp(-\alpha t)}{-\alpha}]_{0}^n 
+%	=  \frac{\exp(-\alpha 0)-\exp(-\alpha n)}{\alpha}
+	\le \frac{1}{\alpha}$, we get
+	\begin{align*}
+	\Exp{R_n} \le 2MW \, (1+4d M^2/r^2 )\,.
+	\end{align*}
+\end{proof}
+\begin{comm}
+	Existing results of FTL in the expert setting  when $\cW = \set{w}{w\ge 0, \|w\|_1\le 1}$ can be recovered from \cref{prop:regretpolyhedron} and \cref{cor:stocPolyhedron}, that FTL achieves constant regret in the stochastic setting, while it may suffer a linear regret in the adversarial setting.
+\end{comm}
+\if0
+However, one common example of $\cW$ is the $\ell_1$ unit ball $B_1  := \set{w}{\|w\|_1\le 1}$, 
+For this set, we have the following result: \todoc{Note later: The two could be combined.}
+\begin{prop}
+\label{prop:R_flatsurface}
+Assume $\cW = \{ w \,:\, \|w\|_1 \le 1\}$, 
+$\cF \subset [0,\infty)^d$ \todoc{It seems this condition is needed with the present proof. Weird.
+Probably things work without this, too, maybe slightly differently.}
+and that $\Phi$ is differentiable at $\Theta_1, \ldots, \Theta_n$. 
+Let $I_t = \arg\max_i |\Theta_{t,i}|$, where $\Theta_{t,i}$ is the $i$th element of the vector $\Theta_t$.
+\todoc{That $\Theta_{t,i}$ is the $i$th element of $\Theta_t$ should probably be mentioned at the notation and in greater generality.}
+Then, the regret of FTL is 
+\[
+R_n = \sum_{t=1}^{n} t\, \ind(I_t \neq I_{t-1}) (\Theta_{t,I_{t-1}} - \Theta_{t,I_t})\,.
+\]
+\end{prop}
+\begin{proof}
+By \cref{prop:R_nBregmanDivergence}, $R_n = \sum_{t=1}^{n} t\,D_{\Phi}(\Theta_t, \Theta_{t-1})$. To analyze $D_{\Phi}(\Theta_t, \Theta_{t-1})$, note that $\Phi(\theta) = \|\theta\|_\infty$, and thus $\Phi$ is differentiable at $\theta$ if and only if $i \mapsto  |\theta_i|$ has a unique maximizer $i^*$, in which case, $\nabla \Phi(\theta) = \sgn(\theta_{i^*}) e_{i^*}$,
+where $e_j$ is the $j$th basis vector of the standard Euclidean basis.
+Thus, letting $i_1=\arg\max_i |\theta_{1,i}|$, $i_2 = \arg\max_i |\theta_{2,i}|$, 
+and assuming that $\Phi$ is differentiable at $\theta_2$,
+\begin{align*}
+D_\Phi (\theta_1, \theta_2) 
+& = \|\theta_1\|_\infty - \|\theta_2\|_\infty - \sgn(\theta_{2,i_2})\, (\theta_{1,i_2} - \theta_{2,i_2}) 
+	 = |\theta_{1,i_1}| - |\theta_{2,i_2}| -(\sgn(\theta_{2,i_2}) \theta_{1,i_2} - |\theta_{2,i_2}|) \\
+	 &= |\theta_{1,i_1}| - \sgn(\theta_{2,i_2}) \theta_{1,i_2} = \theta_{1,i_2} - \theta_{1,i_1}\,,
+\end{align*}
+where the last equality is due to $\theta_i \le 0$ for $i=1,2$.
+Therefore,
+\[
+R_n 
+	= \sum_{t=2}^{n} t\, (\Theta_{t,I_{t-1}} - \Theta_{t,I_t})	
+	=\sum_{t=2}^{n} t\, \ind(I_t \neq I_{t-1}) (\Theta_{t,I_{t-1}} - \Theta_{t,I_t})\,.
+\]
+\end{proof}
+\begin{comm}
+\label{com:onestepdiff}
+In the case when $I_{t}\neq I_{t-1}$ for \cref{prop:R_flatsurface},
+\begin{align*}
+\Theta_{t,I_{t-1}} - \Theta_{t,I_t} & = \Theta_{t,I_{t-1}} - \Theta_{t-1,I_{t-1}} + \Theta_{t-1,I_{t-1}} - \Theta_{t-1,I_t} + \Theta_{t-1,I_t} - \Theta_{t,I_t} \\
+	& \le  (\Theta_{t,I_{t-1}} - \Theta_{t-1,I_{t-1}}) + (\Theta_{t-1,I_t} - \Theta_{t,I_t}) \numberthis \label{eq:eq211}\\
+	& \le \frac{4M}{t}\,,
+\end{align*}
+where inequality \eqref{eq:eq211} is because $ \Theta_{t-1,I_{t-1}} - \Theta_{t-1,I_t} \le 0$ and the last equality is due to  \cref{prop:avgdiff}.
+\end{comm}
+\begin{comm}
+Another typical example of $\cW$ is  $\set{w\in \R^d}{w\ge 0, \|w\|_1 \le 1}$ (or the simplex) when $\cF \subset (-\infty,0]^d$. 
+Note that in this case, $\Theta_t \ge 0$, and thus $\Phi(\Theta_t) = \|(\Theta_t)_+\|_\infty = \|\Theta_t\|_\infty$. Therefore by the analogue of \cref{prop:R_flatsurface}, we still have 
+\[
+R_n = \sum_{t=1}^{n} t\, \ind(I_t \neq I_{t-1}) ( \Theta_{t,I_{t-1}}-\Theta_{t,I_t}).
+\]
+\end{comm}
+The above results can be further extended to general case when $\cW$ is polyhedrons. 
+\fi 
+
+\begin{comm}
+It may be possible to remove the differentiability condition on $\Phi$. \todoc{Indeed, see earlier comments.}
+\todoc{Also: Generalize to at least polyhedrons!}
+\end{comm}
+\todoc[inline]{Comment on stochastic case?}
+\todoc[inline]{Of course, the $\Theta$ differences changes as $O(1/t)$ above. This may be worth pointing out.}
+
+\section{A Lower Bound for the Regret of the Linear Game with constrained adversary}
+We prove that $O(\log n)$ is a lower bound of the linear game when the adversary is constrained to have the average $\Theta_t\ge L_0$ for any $t$.
+For this section, let $\cW=\set{w}{\|w\|_2 \le r}$, $\cF = \set{f}{\|f\|_2\le 1}$, and $\cF_i = \set{f\in\cF}{\|\Theta_i\|_2\ge L_0}$ depending on $\{f_1, f_2, \ldots, f_{i-1}\}$. 
+Such lower bound is attained by analyzing the value of the linear game, defined as follows:
+\begin{align*}
+V_n(\cW, \cF, L_0) & = \min_{w_1\in\cW}\max_{f_1\in\cF_1}\ldots\min_{w_1\in\cW}\max_{f_n\in\cF_n} \sum_{t=1}^{n} \inpro{f_t}{w_t} - \min_{w\in\cW} \sum_{t=1}^{n} \inpro{f_t}{w} \\
+	& = \min_{w_1\in\cW}\max_{f_1\in\cF_1}\ldots\min_{w_1\in\cW}\max_{f_n\in\cF_n} \sum_{t=1}^{n} \inpro{f_t}{w_t} +r \|F_{n-1} + f_n\|_2,
+\end{align*}
+where $F_t = \sum_{i=1}^{t}f_i$. It is straightforward that 
+\[
+V_n \ge \min_{w_1\in\cW}\max_{f_1\in\tcF}\ldots\min_{w_1\in\cW}\max_{f_n\in\tcF} \sum_{t=1}^{n} \inpro{f_t}{w_t} +r \|F_{n-1} + f_n\|_2,
+\]
+where $\tcF = \set{f\in\cF}{\inpro{f}{\Omega} \ge L_0}$ for some fixed unit vector $\Omega$.
+
+Now we propose a strategy for the adversary such that the lower bound of $O(\log n)$ is attained asymptotically.
+The adversary plays $f_1 = L_0\Omega + \sqrt{1-L_0^2}\Omega_1^{\perp}$ for some arbitrary $\Omega_1^{\perp}$ orthogonal to $\Omega$. 
+Then given $F_t = \alpha_t\Omega + \beta_t \Omega_t^{\perp}$, the adversary will play $f_{t+1}= L_0\Omega + \sqrt{1-L_0^2}u$ for some $u$ that is orthogonal to $\Omega$ and $\Omega_t^\perp$.
+It is easy to check that by this strategy, $\alpha_t = tL_0$ and $\beta_t = \sqrt{t(1-L_0^2)}$.
+Therefore, for $t\ge C$ for some large enough constant $C$, $\alpha_tL_0\ge \beta_t\sqrt{1-L_0^2}$, and $\alpha_t\sqrt{1-L_0^2}\ge \beta_tL_0$.
+
+By \cref{prop:onestepoptimalgame}, the optimal solution for 
+
+\begin{align*}
+& \quad \min_{w_1\in\cW}\max_{f_1\in\tcF}\ldots\min_{w_n\in\cW}\max_{f_n\in\tcF} \sum_{t=1}^{n} \inpro{f_t}{w_t} +r \|F_{n-1} + f_n\|_2 \\
+& \ge \min_{w_C\in\cW}\max_{f_C\in\tcF}\ldots\min_{w_n\in\cW}\max_{f_n\in\tcF} \sum_{t=C}^{n} \inpro{f_t}{w_t} +r \|F_{n-1} + f_n\|_2 + O(1)\\
+& = \min_{w_C\in\cW}\max_{f_C\in\tcF}\ldots\min_{w_{n-1}\in\cW}\max_{f_{n-1}\in\tcF} \sum_{t=C}^{n-1} \inpro{f_t}{w_t} + \min_{w_n\in\cW}\max_{f_n\in\tcF} \inpro{f_n}{w_n} +r \|F_{n-1} + f_n\|_2 \\
+& \ge \min_{w_C\in\cW}\max_{f_C\in\tcF}\ldots\min_{w_{n-1}\in\cW}\max_{f_{n-1}\in\tcF} \sum_{t=C}^{n-1} \inpro{f_t}{w_t} + r\|F_{n-1}\|_2+\frac{1-L^2}{2Ln}+O(\frac{1}{n^2})+O(1) \\
+& \ge O(1)+ \frac{1-L^2}{2L}\sum_{t=C}^{n}\frac{1}{t} + \sum_{t=C}^{n}O(\frac{1}{t^2}) + r\|F_{c-1}\|_2 \\
+& =O(\log n).
+\end{align*}
+
+\begin{prop}
+\label{prop:onestepoptimalgame}
+Let $F_t = \alpha_t\Omega + \beta_t\Omega^{\perp}_t$, where $\Omega_t^{\perp}$ is a unit vector orthogonal to $\Omega$, $\alpha_t \ge (t)L_0$, and $\beta_t\ge 0$.
+Also assume that $\alpha_tL_0\ge\beta_t\sqrt{1-L_0^2}$ and $\alpha_t\sqrt{1-L_0^2}\ge\beta_tL_0$.
+Then 
+\[
+\min_{w\in\cW}\max_{f\in\tcF} \inpro{f}{w} + r\|F_t+f\|_2 \ge  \sqrt{\alpha_t^2 + 2\alpha_tL_0 + 1+\beta_t^2} - \frac{\sqrt{\alpha_t^2+2\alpha_tL_0 + 2\beta_t\sqrt{1-L_0^2} + 1}}{\sqrt{\alpha_t^2+2\alpha_tL_0 + \beta_t^2 + 2\beta_t\sqrt{1-L_0^2} + 1}}L_0.
+\]
+Moreover, assume $\alpha_t = tL_0$ and $\beta_t = \sqrt{t(1-L_0^2)}$, then
+\[
+\min_{w\in\cW}\max_{f\in\tcF} \inpro{f}{w} + r\|F_t+f\|_2 \ge r\|F_t\|_2 + \frac{1-L^2}{2Lt}+ O(\frac{1}{t^2}).
+\]
+\end{prop}
+\begin{proof}
+Denote $w$ by $w = -p\Omega + (-q)\Omega_t^{\perp} + h u$, and $f$ by $f = a\Omega + b\Omega_t^{\perp}+cv$, where $u$ and $v$ are both unit vectors orthogonal to $\Omega$ and $\Omega_t^{\perp}$.
+The optimization problem now becomes
+\begin{align*}
+& \quad \min_{p,q,h,u\,:\, p^2+q^2+h^2\le r^2}\, \max_{a,b,c,v\,:\, a\ge L_0, a^2+b^2+c^2\le 1} \inpro{f}{w} + r\|F_t+f\|_2 \\
+& \equiv  \, \min_{p,q,h,u\,:\, p^2+q^2+h^2\le r^2}\, \max_{a,b,c,v\,:\, a\ge L_0, a^2+b^2+c^2\le 1} r\sqrt{(\alpha_t+a)^2 + (\beta_t+b)^2 + c^2} -pa -qb + hc\inpro{u}{v} \\
+& \equiv  \, \min_{p,q,h\,:\, p^2+q^2+h^2\le r^2}\, \max_{a,b,c\,:\, a\ge L_0, a^2+b^2+c^2\le 1} r\sqrt{(\alpha_t+a)^2 + (\beta_t+b)^2 + c^2} -pa -qb + |h|c \numberthis\label{eq:eq31} \\
+& \equiv  \, \min_{p,q\,:\, p^2+q^2\le r^2}\, \max_{a,b,c\,:\, a\ge L_0, a^2+b^2+c^2\le 1} r\sqrt{(\alpha_t+a)^2 + (\beta_t+b)^2 + c^2} -pa -qb \numberthis\label{eq:eq32}\\
+& \equiv  r \, \min_{p,q\,:\, p^2+q^2\le 1}\, \max_{a,b,c\,:\, a\ge L_0, a^2+b^2+c^2\le 1} \sqrt{(\alpha_t+a)^2 + (\beta_t+b)^2 + c^2} -pa -qb \\
+& \equiv  r \, \min_{p,q\,:\, p^2+q^2\le 1}\, \max_{a,b,c\,:\, a\ge L_0, a^2+b^2+c^2=1} \sqrt{(\alpha_t+a)^2 + (\beta_t+b)^2 + c^2} -pa -qb \numberthis\label{eq:eq33}\\
+& \equiv  r \, \min_{p,q\,:\, p^2+q^2\le 1}\, \max_{a,b\,:\, a\ge L_0, a^2+b^2\le 1} \sqrt{\alpha_t^2+2\alpha_ta + \beta_t^2+2\beta_tb + 1} -pa -qb \\
+& \equiv  r \, \min_{p,q\,:\,p\ge 0, q\ge 0, p^2+q^2\le 1}\, \max_{a,b\,:\, a\ge L_0, a^2+b^2\le 1} \sqrt{\alpha_t^2+2\alpha_ta + \beta_t^2+2\beta_tb + 1} -pa -qb \numberthis\label{eq:eq34}\\
+& \triangleq r \, \min_{p,q\,:\,p\ge 0, q\ge 0, p^2+q^2\le 1}\, \max_{a,b\,:\, a\ge L_0, a^2+b^2\le 1} Q(p,q,a,b).
+\end{align*}
+Here Equation~\eqref{eq:eq31} is because the optimal $v$ is always picked to make $hc\inpro{u}{v} = |hc|$. Thus the optimal $h$ is $0$, leading to equation~\eqref{eq:eq32}. Then Equation~\eqref{eq:eq33} is due to the optimality of $c$.
+We will first prove that the optimal solution $p^*$ and $q^*$ have to satisfy ${p^*}^2 + {q^*}^2 = 1. $
+Let 
+\[
+p^*,q^*,a^*,b^* = \arg\min_{p,q\,:\,p\ge 0, q\ge 0, p^2+q^2\le 1}\, \max_{a,b\,:\, a\ge L_0, a^2+b^2\le 1} Q(p,q,a,b),
+\]
+\[
+\hat{a},\hat{b} = \arg\max_{a,b\,:\, a\ge L_0, a^2+b^2\le 1} Q(\sqrt{1-{q^*}^2},q^*,a,b),
+\]
+and 
+\[
+\tilde{p},\tilde{q},\tilde{a},\tilde{b} = \arg\min_{p,q\,:\,p\ge 0, q\ge 0, p^2+q^2= 1}\, \max_{a,b\,:\, a\ge L_0, a^2+b^2\le 1} Q(p,q,a,b).
+\]
+Thus, $Q(p^*,q^*,a^*,b^*) \le Q(\tilde{p},\tilde{q},\tilde{a},\tilde{b})$. On the other hand, $Q(p^*,q^*,a^*,b^*) \ge Q(p^*,q^*,\hat{a},\hat{b})$. Note that $\hat{a}\ge L_0 > 0$, so $Q(p^*,q^*,\hat{a},\hat{b}) \ge Q(\sqrt{1-{q^*}^2}, q^*, \hat{a},\hat{b}) \ge Q(\tilde{p},\tilde{q},\tilde{a},\tilde{b})$.
+Therefore, $Q(p^*,q^*,a^*,b^*) = Q(\sqrt{1-{q^*}^2}, q^*, \hat{a},\hat{b}) = Q(\tilde{p},\tilde{q},\tilde{a},\tilde{b})$, and the optimization problem is equivalent to 
+\[
+r \, \min_{p,q\,:\,p\ge 0, q\ge 0, p^2+q^2= 1}\, \max_{a,b\,:\, a\ge L_0, a^2+b^2\le 1} Q(p,q,a,b).
+\]
+
+Note that 
+\begin{align*}
+\frac{\partial Q}{\partial b}& =\frac{\beta_t}{\sqrt{\alpha_t^2+2\alpha_ta + \beta_t^2+2\beta_tb + 1}} - q; \\
+\frac{\partial Q}{\partial a}& =\frac{\alpha_t}{\sqrt{\alpha_t^2+2\alpha_ta + \beta_t^2+2\beta_tb + 1}} - p.
+\end{align*}
+We compute the lower bound of Equation~\eqref{eq:eq34}, based on different cases of the value of $q$, as follows.\\
+
+{\bf Case 1: $q\ge \frac{\beta_t}{\sqrt{\alpha_t^2+2\alpha_tL_0 + \beta_t^2 - 2\beta_t\sqrt{1-L_0^2} + 1}}$.} \\
+Note that in this case $\frac{\partial Q}{\partial b} \le 0$ for any $a,b$. Thus, the optimal $b^* = -\sqrt{1-{a^*}^2}$. Thus the optimization question is transformed to 
+\[
+\min_{p,q}\, \max_{a\,:\, 1\ge a\ge L_0} \sqrt{\alpha_t^2 + \beta_t^2+1+2\alpha_ta - 2\beta_t\sqrt{1-a^2}} -pa +q\sqrt{1-a^2}.
+\]
+It is straightforward that the optimal $q$ is the smallest possible $q$, i.e. $q^* = \frac{\beta_t}{\sqrt{\alpha_t^2+2\alpha_tL_0 + \beta_t^2 - 2\beta_t\sqrt{1-L_0^2} + 1}}$.
+
+{\bf Case 2: $q\le \frac{\beta_t}{\sqrt{\alpha_t^2 + \beta_t^2 +1 +2\sqrt{\alpha_t^2+\beta_t^2}}} = \frac{\beta_t}{\sqrt{\alpha_t^2+\beta_t^2}+1}$.} \\
+Similar to Case 1, $\frac{\partial Q}{\partial b} \ge 0$, thus $b^* = \sqrt{1-a^*}$. The optimization problem is reduced to 
+\[
+\min_{p,q}\, \max_{a\,:\, 1\ge a\ge L_0} \sqrt{\alpha_t^2 + \beta_t^2+1+2\alpha_ta+2\beta_t\sqrt{1-a^2}} -pa  - q\sqrt{1-a^2}.
+\]
+Therefore, $q^* = \frac{\beta_t}{\sqrt{\alpha_t^2+\beta_t^2}+1}$.
+
+{\bf Case 3: $\frac{\beta_t}{\sqrt{\alpha_t^2+\beta_t^2}+1} \le q \le \frac{\beta_t}{\sqrt{\alpha_t^2+2\alpha_tL_0 + \beta_t^2 - 2\beta_t\sqrt{1-L_0^2} + 1}}$.} \\
+
+Since $q \le \frac{\beta_t}{\sqrt{\alpha_t^2+2\alpha_tL_0 + \beta_t^2 - 2\beta_t\sqrt{1-L_0^2} + 1}}$, 
+\[p \ge \frac{\sqrt{\alpha_t^2+1+2\alpha_tL_0  - 2\beta_t\sqrt{1-L_0^2}}}{\sqrt{\alpha_t^2+2\alpha_tL_0 + \beta_t^2 - 2\beta_t\sqrt{1-L_0^2} + 1}}
+>\frac{\alpha_t}{\sqrt{\alpha_t^2+2\alpha_tL_0 + \beta_t^2 - 2\beta_t\sqrt{1-L_0^2} + 1}}.
+\]
+Thus $\frac{\partial Q}{\partial a} \le 0$, and $a^* = L_0$. Therefore, the optimization problem is reduced into 
+\[
+\min_{p,q}\, \max_{b\,:\, b^2\le 1-L_0^2} \sqrt{\alpha_t^2+2\alpha_tL_0 + \beta_t^2+2\beta_tb + 1} -pL_0 -qb.
+\]
+{\bf SubCase 1: $\frac{\beta_t}{\sqrt{\alpha_t^2+\beta_t^2}+1} \le q \le \frac{\beta_t}{\sqrt{\alpha_t^2+2\alpha_tL_0 + \beta_t^2 + 2\beta_t\sqrt{1-L_0^2} + 1}}$.} \\
+Similarly, $\frac{\partial Q}{\partial b} = \frac{\beta_t}{\sqrt{\alpha_t^2+2\alpha_tL_0 + \beta_t^2+2\beta_tb + 1}} - q \ge 0$, and thus $b^* = \sqrt{1-L_0^2}$. Solving 
+\[
+\min_{p,q}\, \max_{b\,:\, b^2\le 1-L_0^2} \sqrt{\alpha_t^2+2\alpha_tL_0 + \beta_t^2+2\beta_t\sqrt{1-L_0^2} + 1} -pL_0 -q\sqrt{1-L_0^2}.
+\]
+Further notice that by the constraints on $q$, 
+\[
+\frac{q}{p} \le \frac{\beta_t}{\sqrt{\alpha_t^2+2\alpha_tL_0 + 2\beta_t\sqrt{1-L_0^2} + 1}}
+\le \frac{\beta_t}{\alpha_t} \le \frac{\sqrt{1-L_0^2}}{L_0}.
+\]
+Therefore, $q^* = \frac{\beta_t}{\sqrt{\alpha_t^2+2\alpha_tL_0 + \beta_t^2 + 2\beta_t\sqrt{1-L_0^2} + 1}}$. \\
+{\bf SubCase 2: $\frac{\beta_t}{\sqrt{\alpha_t^2+2\alpha_tL_0 + \beta_t^2 + 2\beta_t\sqrt{1-L_0^2} + 1}} \le q \le \frac{\beta_t}{\sqrt{\alpha_t^2+2\alpha_tL_0 + \beta_t^2 - 2\beta_t\sqrt{1-L_0^2} + 1}}$.} \\
+Note that given the constraint $p^2+q^2=1$, and the optimal solutions for $q^*$ in Case 1, Case 2, and SubCase 3, to solve the original problem Equation~\eqref{eq:eq34}, one only needs to consider SubCase 2.
+Therefore, the original optimization problem becomes
+\begin{align*}
+& \quad \min_q \max_{b^2\le 1-L_0^2} \sqrt{\alpha_t^2+2\alpha_tL_0 + \beta_t^2+2\beta_tb + 1} -\sqrt{1-q^2}L_0 -qb \\ 
+& \ge \min_q \sqrt{\alpha_t^2+2\alpha_tL_0 + \beta_t^2 + 1} -\sqrt{1-q^2}L_0 \\
+& = \sqrt{\alpha_t^2 + 2\alpha_tL_0 + 1+\beta_t^2} - \frac{\sqrt{\alpha_t^2+2\alpha_tL_0 + 2\beta_t\sqrt{1-L_0^2} + 1}}{\sqrt{\alpha_t^2+2\alpha_tL_0 + \beta_t^2 + 2\beta_t\sqrt{1-L_0^2} + 1}}L_0. \numberthis \label{eq:eq35}
+\end{align*}
+
+Plugging $\alpha_t = tL_0$ and $\beta_t = \sqrt{t(1-L_0^2)}$, by \cref{lem:onestepdiff}, 
+\[
+\min_{w\in\cW}\max_{f\in\tcF} \inpro{f}{w} + r\|F_t+f\|_2 \ge r\|F_t\|_2 + \frac{1-L^2}{2Lt}+ O(\frac{1}{t^2}).
+\]
+
+\end{proof}
+\begin{lemma}
+\label{lem:onestepdiff}
+Given a fixed $L>0$, 
+\begin{align*}
+& \sqrt{n^2L^2+n(1-L^2)} - \sqrt{(n-1)^2L^2+(n-1)(1-L^2)}-\frac{\sqrt{n^2L^2+(1-L^2)+2\sqrt{n-1}(1-L^2)}}{\sqrt{n^2L^2+n(1-L^2)+2\sqrt{n-1}(1-L^2)}}L \\
+& = \frac{1-L^2}{2nL}+O(\frac{1}{n^2}).
+\end{align*}
+\end{lemma}
+\begin{proof}
+Note that $\sqrt{x+\epsilon} = \sqrt{x}+\frac{\epsilon}{2\sqrt{x}}-\frac{\epsilon^2}{2x^{3/2}}+O(\epsilon^3)$. Thus,
+\[
+\sqrt{n^2L^2+n(1-L^2)} = n\sqrt{L^2+\frac{1-L^2}{n}} = n\left(L + \frac{\frac{1-L^2}{n}}{2L}-\frac{\left(\frac{1-L^2}{n}\right)^2}{4L^3} + O(\frac{1}{n^3})\right) = nL + \frac{1-L^2}{2L} - \frac{(1-L^2)^2}{4nL^3} + O(\frac{1}{n^2}),
+\]
+and 
+\[
+\sqrt{(n-1)^2L^2+(n-1)(1-L^2)} = (n-1)L + \frac{1-L^2}{2L} - \frac{(1-L^2)^2}{4(n-1)L^3} + O(\frac{1}{n^2}).
+\]
+So 
+\[
+\sqrt{n^2L^2+n(1-L^2)} - \sqrt{(n-1)^2L^2+(n-1)(1-L^2)} = L + O(\frac{1}{n^2}).
+\]
+Therefore, it is sufficient to prove 
+\[
+L - \frac{\sqrt{n^2L^2+(1-L^2)+2\sqrt{n-1}(1-L^2)}}{\sqrt{n^2L^2+n(1-L^2)+2\sqrt{n-1}(1-L^2)}}L = O(\frac{1-L^2}{2nL}).
+\]
+\begin{align*}
+& \quad L - \frac{\sqrt{n^2L^2+(1-L^2)+2\sqrt{n-1}(1-L^2)}}{\sqrt{n^2L^2+n(1-L^2)+2\sqrt{n-1}(1-L^2)}}L \\
+& = \frac{\sqrt{n^2L^2+n(1-L^2)+2\sqrt{n-1}(1-L^2)} - \sqrt{n^2L^2+(1-L^2)+2\sqrt{n-1}(1-L^2)}}{\sqrt{n^2L^2+n(1-L^2)+2\sqrt{n-1}(1-L^2)}}L. \numberthis \label{eq:eq36}
+\end{align*}
+Similarly, 
+\begin{align*}
+\sqrt{n^2L^2+n(1-L^2)+2\sqrt{n-1}(1-L^2)} & = n\sqrt{L^2+\frac{n(1-L^2)+2\sqrt{n-1}(1-L^2)}{n^2}} \\
+&  = n\left(L + \frac{\frac{n(1-L^2)+2\sqrt{n-1}(1-L^2)}{n^2}}{2L} +O(\frac{1}{n^2})\right) \\
+& = nL + \frac{(1-L^2)+ \frac{2\sqrt{n-1}(1-L^2)}{n}}{2L} + O(\frac{1}{n}),
+\end{align*}
+and 
+\begin{align*}
+\sqrt{n^2L^2+(1-L^2)+2\sqrt{n-1}(1-L^2)} = nL+\frac{\frac{(1-L^2)+2\sqrt{n-1}(1-L^2)}{n}}{2L}+O(\frac{1}{n^2}).
+\end{align*}
+So Equation~\eqref{eq:eq36} equals
+\begin{align*}
+\frac{L}{\sqrt{n^2L^2+n(1-L^2)+2\sqrt{n-1}(1-L^2)}}\left( \frac{(n-1)(1-L^2)}{2nL}+O(\frac{1}{n})\right) = \frac{1-L^2}{2nL}+O(\frac{1}{n^2}).
+\end{align*}
+\end{proof}
+
+\section{Aa adaptive algorithm for the linear game}
+While as shown in Proposition \ref{prop:R_curvesurface}, FTL can exploit the curvature of the surface of the constraint set to achieve $O(\log n)$ regret, it requires the curvature condition and $\|\Theta_t\|_2 \ge L >0$. Otherwise it may also suffer linear regret in the worst case. 
+On the other hand, many algorithm are known to achieve regret guarantee of $O(\sqrt{n})$ even for the worst-case data in the linear game such as "Follow-the-regularized-leader" (FTRL).
+It then raises a natural question if we can have an algorithm that can adapt to the difficulty of the problem, 
+thus achieves constant or $O(\log n)$ regret in the setting of Corollary \ref{cor:stocPolyhedron} or Proposition \ref{prop:R_curvesurface},
+while still maintains the $O(\sqrt{n})$ for the worst-case data. 
+One way to design an adaptive algorithm is to use the ($\cA$, $\cB$)-prod algorithm \citep{sani2014exploiting}. 
+\begin{prop}
+Picking $\cA$ algorithm to be FTRL, and $\cB$ algorithm to be FTL, Then the regret of the ($\cA$, $\cB$)-prod algorithm has the following guarantees.
+\begin{itemize}
+\item If FTL achieves constant regret as in the setting of Corollary \ref{cor:stocPolyhedron}, then the regret of ($\cA$, $\cB$)-prod is also constant.
+\item If FTL achieves a regret of $O(\log n)$ as in the setting of Proposition \ref{prop:R_curvesurface}, then the regret of ($\cA$, $\cB$)-prod is also $O(\log n)$.
+\item Otherwise, the regret of ($\cA$, $\cB$)-prod is at most $O(\sqrt{n\log n})$.
+\end{itemize}
+\end{prop} 
+
+
+\section{An adaptive Algorithm for the Linear Game}
+\todor[inline]{The idea of shrinking the original estimation does not work so far. It requires $\frac{\|f_t\|}{\|\Theta_{t-1}\|}$ or $\frac{\|\Theta_t\|}{\|\Theta_{t-1}\|}$ to be small to have a $O(\sqrt{n})$ regret in the worst-case data.}
+In order to achieve the $O(\log(n))$ regret in \cref{prop:R_curvesurface}, condition $\| \Theta_t\|_2 \ge L >0$ is necessary. 
+In fact, A $O(\sqrt{n})$ lower bound of the linear game has been proved of \citet{abernethy2008optimal} when $\cW$ is a ball in the Euclidean space.
+The "follow the regularized leader" algorithm (FTRL) attains a $O(\sqrt{n})$ regret, thus achieves the optimal rate for the worst-case data.
+However, it is easy to see that FTL may suffer a trivial $O(n)$ regret for the worst-case data, whereas FTRL has $O(\sqrt{n})$ regret even for the easy data where FTL will performs much better.
+
+This phenomenon raise a natural question: can we have an algorithm that can adapt to difficulty of the data, and thus achieve $O(\log(n))$ regret when the data is easy, while only suffer $O(\sqrt{n})$ regret when the data is difficult.
+Results about such adaptive algorithm is not new in the literature \citep{sani2014exploiting,bubeck2012best}. 
+In this section we present a new adaptive algorithm for the linear game. Compared to the (A,B)-prod algorithm in \citep{sani2014exploiting}, our algorithm is simpler without running both FTL and FTRL in each round. 
+Our algorithm also provides a continuous transition between the easy data and the worst data, while the resulting regret in the (A,B)-prod algorithm is in a binary style, either being $O(\sqrt{n\log(n)})$ or $\O(\log(n))$.\todoa{This sentence is absolutely not justified, and I don't think it is true in general! It should be removed.}
+Finally, the regret of our algorithm for the worst-case data is $O(\sqrt{n})$, matching the lower bound, while the regret of (A,B)-prod is $O(\sqrt{n\log(n)})$.
+
+The worst case sequence presented in the lower bound of \citet{abernethy2008optimal} keeps the sequence $(\Theta_t)$ close to the origin, and the FTRL algorithm achieves the optimal regret rate by penalizing larger values of $w_t$, keeping it away from the boundary of $\cW$. To mimic this idea, we shrink the prediction $w_t$ of FTL towards zero based on the magnitude of $\|\Theta_{t-1}\|$: for larger values of $\Theta_{t-1}$ we do not need to shrink at all, but for small values we need to keep the prediction small to avoid potentially large losses for a changing sequence $f,-f,f,-f,\ldots$ of losses. 
+
+We assume that $\cW$ is of a star shape, that is, $c w\in\cW$ for any $0 \le c \le1$ and $w\in\cW$. 
+% and for simplicity we assume that $\|w\|_2 \le 1$ for all $w \in \cW$. 
+Define the shrinkage function
+for any $t \ge 1$ and $\theta \ge 0$ as the centered sigmoid function
+\[
+\sigma_t(\theta)= \frac{1-e^{-\theta\sqrt{t+1}}}{1+e^{-\theta\sqrt{t+1}}}~.
+\]
+
+Given $\sigma_t$, our regularized prediction algorithm, called Shrinked FTL, is defined as follows:
+\begin{algorithm}[H]
+	\caption{Shrinked FTL}
+	\label{alg:ShrinkedFTL}
+	\begin{algorithmic}[1]
+		\STATE $w_1 = 0$
+		\FOR{$t = 2 \text{ to } n$} 
+		\STATE Compute the prediction by FTL $w_t =  \arg\min_{w\in\cW} \sum_{i=1}^{t-1} \ip{ w, f_i }$.
+		\STATE The learner predicts $\tw_t = \sigma_{t-1}(\|\Theta_{t-1}\|) w_t \in \cW$.  % (Note that $\tw_t \in \cW$.)
+		\ENDFOR
+	\end{algorithmic}
+\end{algorithm}
+
+\begin{prop}
+	Let $M = \max_{f\in \cF} \norm{f}_2$.
+	Assume that the principal curvatures of the surface $\bd(\cW)$
+	are all greater than $\lambda_0$ for some constant $\lambda_0>0$, then the regret of Shrinked FTL is at most $O(\sqrt{n})$. If, in addition, the $\Theta_t \ge L$ for all $L$, then the regret is $O(\log n)$.
+\end{prop}
+\begin{proof}
+        To simplify the notation, we will write $\|\cdot\|$ for the Eucledian norm $\|\cdot\|_2$.
+	Similarly to the proof of \cref{prop:R_nBregmanDivergence},
+	\begin{align*}
+	R_n & = \sum_{t=1}^{n} \inpro{f_t}{\tw_t} - \min_{w\in \cW}\sum_{t=1}^{n} \inpro{f_t}{w} \\
+		& = \left( \sum_{t=1}^{n} \inpro{f_t}{w_t} - \min_{w\in \cW}\sum_{t=1}^{n} \inpro{f_t}{w} \right) + \left( \sum_{t=1}^{n} \inpro{f_t}{\tw_t} - \sum_{t=1}^{n} \inpro{f_t}{w_t} \right)\\
+		& = \sum_{t=1}^{n} t\,D_{\Phi}(\Theta_t,\Theta_{t-1}) + \sum_{t=1}^{n} 
+		(1-\sigma_{t-1}(\|\Theta_{t-1}\|) \inpro{-f_t}{w_t}\numberthis \label{eq:eq11}\\
+		& = \sum_{t=1}^{n} t\,D_{\Phi}(\Theta_t,\Theta_{t-1}) + \sum_{t=1}^{n} \big(1-\sigma_{t-1}(\|\Theta_{t-1}\|)\big)  t\inpro{\Theta_t - \Theta_{t-1}}{w_t} + \sum_{t=1}^{n} (1-\sigma_{t-1}(\|\Theta_{t-1}\|)  \inpro{\Theta_{t-1}}{w_t}\\
+		& = \sum_{t=1}^{n} t\,D_{\Phi}(\Theta_t,\Theta_{t-1}) + \sum_{t=1}^{n} \big(1-\sigma_{t-1}(\|\Theta_{t-1}\|\big)  \left[\,t\left(\, \Phi(\Theta_t) - \Phi(\Theta_{t-1}) - D_{\Phi}(\Theta_t, \Theta_{t-1})\, \right) +\Phi(\Theta_{t-1})\,\right]\\
+		& = \sum_{t=1}^{n} \sigma_{t-1}(\|\Theta_{t-1}\|)\, t\,D_{\Phi}(\Theta_t,\Theta_{t-1}) + \sum_{t=1}^{n} \big(1-\sigma_{t-1}(\|\Theta_{t-1}\|)\big)  \left( t\Phi(\Theta_t) - (t-1) \Phi(\Theta_{t-1})\right) \\
+		& = \sum_{t=1}^{n} \sigma_{t-1}(\|\Theta_{t-1}\|)\, t\,D_{\Phi}(\Theta_t,\Theta_{t-1}) + \big(1-\sigma_{n-1}(\|\Theta_{n-1}\|) \big) n\Phi(\Theta_n) \\ 
+		& \quad + \sum_{t=1}^{n-1} \big(\sigma_{t}(\|\Theta_{t}\|)-\sigma_{t-1}(\|\Theta_{t-1}\|)\big) t\Phi(\Theta_t). \numberthis \label{eq:eq12}
+	\end{align*}
+	By \eqref{eq:middlew}, \eqref{eq:middletheta}, and Proposition~\ref{prop:avgdiff}, we obtain
+	\[
+	   D_{\Phi}(\Theta_t,\Theta_{t-1}) \le \frac{\|\Theta_t - \Theta_{t-1}\|^2}{2 \lambda_0 \|\Theta_{t-1}\|} 
+	   \le \frac{2 M^2}{\lambda_0 t^2 \|\Theta_{t-1}\|}
+	\]
+	Thus, the first summation in \eqref{eq:eq12} is bounded from above by
+	\[
+	\sum_{t=2}^n \frac{2 M^2}{\lambda_0} \frac{\sigma_{t-1}(\|\Theta_{t-1}\|)}{t \|\Theta_{t-1}\|}~.
+	\]
+	By the definition of $\sigma_{t-1}$, we have
+	\[
+	\sigma_{t-1}(\theta) = \frac{1-e^{-\theta\sqrt{t}}}{1+e^{-\theta \sqrt{t}}} \le 1-e^{-\theta\sqrt{t}} \le \theta \sqrt{t},
+	\]
+	implying, for a general sequence $(\Theta_t)$,
+	\[
+	\sum_{t=1}^n \sigma_{t-1}(\|\Theta_{t-1}\|)\, t\,D_{\Phi}(\Theta_t,\Theta_{t-1})
+	\le \sum_{t=2}^n \frac{2 M^2}{\lambda_0} \frac{\sigma_{t-1}(\|\Theta_{t-1}\|)}{t \|\Theta_{t-1}\|}
+	\le \sum_{t=2}^n \frac{2 M^2}{\lambda_0 \sqrt{t}} 
+	 \le \frac{4 M^2 \sqrt{n}}{\lambda_0}~.
+	\]
+	If $\|\Theta_{t}\| \ge L$ for all $t$, we get $\sigma_{t-1}(\|\Theta_{t-1}\|) \le 1$ and the sum is bounded by
+	$2M^2 \log(n)/(L \lambda_0)$.
+	
+	
+	For the second term, using that $\Phi(\Theta_t) \le K \|\Theta_t\|$, where $K = \sup_{w\in\cW} \|w\|$ is a constant, we have
+	\begin{align*}
+	\big(1-\sigma_{n-1}(\|\Theta_{n-1}\|) \big) n\Phi(\Theta_n) 
+	\le \frac{2 e^{-\|\Theta_{n}\| \sqrt{n}}}{1+e^{-\|\Theta_{n-1}\|\sqrt{n}}} n K \|\Theta_{n-1}\|
+	\le 2 K n \|\Theta_{n}\| e^{-\|\Theta_{n-1}\| \sqrt{n}}~.
+	\end{align*}
+	By the triangle inequality and Proposition~\ref{prop:avgdiff}, we have
+	$\|\Theta_{n-1}\| \ge \|\Theta_n\| - 2M/n \ge \|\Theta_n\| - 2M/\sqrt{n} $, and so
+	\begin{align*}
+	\big(1-\sigma_{n-1}(\|\Theta_{n-1}\|) \big) n\Phi(\Theta_n)
+	& \le 2 K n \|\Theta_{n}\| e^{-\|\Theta_{n-1}\| \sqrt{n}}
+	 \le 2 K n \|\Theta_{n}\| e^{-\|\Theta_{n}\| \sqrt{n}+2M}
+	 \le 2 K \sqrt{n} e^{2M-1},
+	\end{align*}
+	where in the last step we used that $\theta e^{-\theta u} \le 1/(ue)$ for all $\theta$ (the maximum is achieved for $\theta=1/u$, as can be shown easily by differentiation). Similarly, when $\Theta_{n-1} \ge L$, maximizing the second to last expression over $n$ (using that $u^2 e^{-\theta u}\le (2/\theta) e^{-\sqrt{2 \theta}}$  for all $u$ since the maximum is achieved for $u=\sqrt{2/\theta}$), we obtain that this term is bounded by $4 K e^{-\sqrt{2 L}+2M}$.
+	
+	For the final term, we only consider the case when the difference  $\sigma_{t}(\|\Theta_{t}\|)-\sigma_{t-1}(\|\Theta_{t-1}\| ) \ge 0$, since otherwise the corresponding term is negative. By the triangle inequality and Proposition~\ref{prop:avgdiff}, we have
+	$\|\Theta_{t-1}\| \ge \|\Theta_t\| - 2M/t$. Therefore,
+	\begin{align*}
+	\sigma_{t}(\|\Theta_{t}\|)-\sigma_{t-1}(\|\Theta_{t-1}\| ) 
+	& \le \sigma_{t}(\|\Theta_{t}\|)-\sigma_{t-1}(\|\Theta_{t}\|- 2M/t ) \\
+	& = \frac{e^{-(\|\Theta_{t}\|-2M/t)\sqrt{t}} - e^{-\|\Theta_t\|\sqrt{t+1}}}{\left(1+e^{-(\|\Theta_t\|-2M/t)\sqrt{t}}\right)
+														\left(1+ e^{-\|\Theta_t\|\sqrt{t+1}}\right)} \\
+	& \le e^{-\|\Theta_{t} \| \sqrt{t} + \tfrac{2M}{\sqrt{t}}} - e^{-\|\Theta_t\|\sqrt{t+1}} \\
+	& \le e^{-\|\Theta_t\|\sqrt{t+1}} \left( e^{\|\Theta_t\| (\sqrt{t+1}-\sqrt{t}) + \tfrac{2M}{\sqrt{t}}} -1\right) \\
+	& \le e^{-\|\Theta_t\|\sqrt{t+1}} \left( e^{\tfrac{\|\Theta_t\|}{2 \sqrt{t}} + \tfrac{2M}{\sqrt{t}}} -1\right) \\
+	& \le e^{-\|\Theta_t\|\sqrt{t+1}} (e^{2.5M}-1) \frac{\|\Theta_t\|+4M}{5 \sqrt{t}} 
+	\end{align*}
+	\todoa[inline]{I thought this would work, but it has the same problems as the one Ruitong proposed. I actually tried several shrinkage functions, and none of them worked so far. It is very easy to characterize what properties such a function should satisfy (basically the inequalities used above. The only reason I am checking this in is that the properties are more apparent than they were for Ruitong. But I am not sure the desired function actually exist. Maybe the analysis has to be done differently.}
+%	Then, using again that $\Phi(\Theta_t) \le K \|\Theta_t\|_2$ and $\Theta_t=(t-1)\Theta_{t-1}-f_t$, we have
+%	\begin{align*}
+%	\lefteqn{\left(\frac{1}{1+(t-1)\|\Theta_{t-1}\|^2_2} - \frac{1}{1+t\|\Theta_t\|^2_2} \right) t\Phi(\Theta_t)} \\
+%	& \le \left(\frac{1}{1+(t-1)\|\Theta_{t-1}\|^2_2} - \frac{1}{1+t\|\Theta_t\|^2_2} \right) t K \|\Theta_t\|_2 \\
+%	&= \frac{1}{(t-1)\|\Theta_{t-1}\|_2^2 +1}
+%	\end{align*}
+\end{proof}
+
+
+%\bibliographystyle{apalike}
+\bibliography{reference}
+\bibliographystyle{plainnat}
+
+%\appendix
+%\section{Appendix}
+
+\end{document}

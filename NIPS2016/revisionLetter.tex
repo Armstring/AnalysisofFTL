@@ -1,0 +1,63 @@
+\documentclass[10pt,english]{article}
+
+\usepackage{babel}
+\usepackage[round]{natbib}
+\usepackage{fullpage,amsmath}
+
+\title{Following the Leader and
+Fast Rates in Linear Prediction:
+Curved Constraint Sets and Other Regularities \\
+\emph{Response to the reviewers}}
+\author{Ruitong Huang \and Tor Lattimore \and Andr\'as Gy\"orgy \and Csaba Szepesv\'ari}
+
+
+\newcommand{\cW}{\mathcal{W}}
+\newcommand{\inpro}[2]{\langle #1, #2\rangle}
+\newcommand{\ttheta}{\tilde{\theta}}
+\newcommand{\wtheta}{\widehat{\theta}}
+\newcommand{\htheta}{\hat{\theta}}
+\DeclareMathOperator{\argmax}{argmax}
+\newcommand{\bd}{\mathrm{bd}}
+
+
+\begin{document}
+\maketitle
+We would like to thank the reviewers for their insightful and helpful reviews. Below we summarize the changes we made in the revision and respond to the remaining comments:
+
+\section*{Joint responses to both reviewers}
+\begin{enumerate}
+\item Differential geometry background: We have added a figure (Figure~2) to the main content to better explain the geometry. We have added a new section in the appendix, Section A.2 explaining more details on differential geometry. On the other hand, we intentionally have not added a detailed definition of manifolds, since, in our opinion, a short description we could provide in the paper would not help understanding better our derivations.
+\item Emphasizing the equivalence between strong convexity and the positivity of principal curvatures: we have moved the statement to the main text (Proposition~4).
+\item In the proof of Theorem~4 (now Theorem~5), why "$\gamma'(s)$ is a unit vector parallel to $P$. Moreover $u'_{\gamma}(s)$ is parallel to $\gamma'(s)$ and $\lambda(s) = \| u'_{\gamma}(s) \|_2$?": We rephrased this part, adding some more explanation:
+"Note that $\gamma$ is a planar curve on $\bd(\cW)$, 
+thus its curvature $\lambda(s)$ satisfies $\lambda(s) \ge \lambda_0$ for any $s\in [0,l]$.
+Also, for any $\gamma(s)$ on the curve $\gamma$, $\gamma'(s)$ is a unit vector parallel to $P$ (since $\gamma$ is parametrized by its curve length). 
+Moreover, $u_\gamma'(s)$ is parallel to $\gamma'(s)$ since $u_{\gamma}(s)$ is the Gauss map, and $\lambda(s) = \|u_\gamma'(s)\|_2$."
+\item Adaptive algorithms for other constraint sets beside the Euclidean ball: We extended the analysis of the adaptive algorithms FTSL and FTRL to ellipsoid constraint sets (Remark 14 and Remark 16). Extensions to $\ell_p$-balls have defied our efforts so far and remains an open problem.
+\end{enumerate}
+
+\section*{Responses to Reviewer 1}
+\begin{enumerate}
+\item Comparison to the paper of \citet{koolen2016combining}: We have added a discussion in Remark~7, indeed showing some improvement on the dependence on the dimension in certain situations.
+\item %%%%%%%%%%%%%%%
+Why FTRL is worse than FTL for $L=0.1$ in the simulations (with an ellipsoid constraint set): As mentioned in Remark~16 (in the current version), the performance of FTRL using $\ell_2$-regularization for ellipsoid constraint sets remains an open question. The regularization we derived in the remark depends on the ellipsoid, and hence results in a different, adaptive step size; this difference may be responsible for the observed behavior. On the other hand, running experiments with differently tuned non-adaptive step sizes would not be too informative, as the FTRL algorithm converges to FTL (and hence their regret, too) as the step size increases to infinity.
+
+\item Limitations of the linearization trick:	We discuss this problem now on pages 3-4, in the last paragraph before Section~2.1. If the optimum is inside $\mathcal{W}$, linearization causes problems, but no problem occurs if the optimum is outside.
+\item Usefulness of Proposition~3: We indeed do not use Proposition~3 to derive other results, but we think that the result is insightful, so we chose to include it in the paper. This is discussed now before the proposition.
+\item Alternative proof of equation (4) -- equation (6) in the new version: Thanks for the proof based on strong convexity! We kept our original proof in the main text and included your variant in Section A.3.
+\item Why $u_\gamma(0) = \ttheta_1$ and $u_\gamma(l) = \htheta_2$? For any unit vector $\theta$, $w_\theta=\argmax_{w \in \cW} \inpro{w}{\theta}$ is a point where a hyperplane with normal vector $\theta$ touches $\cW$. Thus, $u_{\cW}(w_\theta)=\theta$, and so equality holds for their projections, as well. We added this explanation to the text, too.
+\item Dependence on the dimension $d$ in Corollary~8 (now Corollary~11): We implemented your suggestion, thank you!
+\end{enumerate}
+
+\section*{Responses to Reviewer 2}
+\begin{enumerate}
+\item About providing additional scenarios for Theorem~4 (Theorem~5 in the new version):
+Beside the stochastic case, we also added a hard case to the discussion (now Remark~6) where the theorem only yields a trivial regret bound.
+\item Other examples of strongly convex sets: We have added $\ell_p$-balls to Example~1, which are widely used in machine learning. We also refer to the paper of  \citet{garber2014faster}, where even more examples are provided.
+\item Typo in the definition of the Weingarten map: Indeed, the referred equation was wrong (thanks for spotting it), we have corrected it (now the proof of Example~1 is moved to Section A.3 in the appendix).
+\item Example~2: We have revised the example and also moved it to a more appropriate place (Section~2.2). The example is actually independent of the curvature but demonstrates well how logarithmic regret is achievable by FTL in certain cases; it is used as a motivation for the rest of the paper.
+\end{enumerate}
+
+\bibliography{reference}
+\bibliographystyle{plainnat}
+\end{document}

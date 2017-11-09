@@ -1,0 +1,30 @@
+This paper provides a new insight that the curvature of a decision set/constraint set admits FTL logarithmic regret. Specifically, it shows that when the decision set/constraint set is strongly-convex, FTL can achieve a regret bound on the order of log T, rather than the typical worst-case bound of O(T). The proof uses some technique in differential geometry, which is very interesting. The paper also provides a matching lower bound. It gives an important result which the authors do not emphasize ------ Proposition 12 shows three equivalent definitions of a strongly convex set. The result may be independent of interest. The paper also conducts extensive simulation to verify their theoretical findings. It also discusses the conditions that FTL can still work on a non-curved set. Moreover, using the result of Sani et al. (2014), it shows how to get logarithmic regret when the data has the regularity required for the main result (i.e. when the cumulative loss is lower bounded away from zero) while maintaining O(\sqrt{T}) regret in the worst case (i.e. when cumulative loss is (close to) zero). They also provide a new algorithm that guarantees both type of optimal regret when the constraint set is the unit ball.
+
+Theorem 4 is the main contribution of the paper. It proves logarithm regret, which is a significant result. The authors also discuss $L_n$ in the regret bound, which is the norm of cumulative loss or averaged loss in $n$ rounds. They provide one way to reduce the sensitivity to the quantity $L_n$, which results in a data-dependent bound. The data depend bound contains a term that is a "weighted" version of number of times that the averaged loss is smaller than a specific value. A stochastic loss setting is given as a scenario such that the term can be bounded by a constant value. It would be great to provide some scenarios in non-stochastic setting, as this would make the result more broadly applicable.
+
+COMMENT: (This concerns the discussion after Theorem 4.)
+Just add a bad adversary (bad for FTL). Simplest case.
+
+
+Another issue is in the proof of Theorem 4. On page 8, the third to last inequality of the proof, it uses the statement that "Moreover, $u'_{\gamma}(s) is parallel to \gamma'(s) and \lambda(s) = \| u'_{\gamma}(s) \|_2" Can you explain why this is true?
+
+COMMENT: Elaborate why this is true.
+
+You can emphasize the concept in section 3.1, the introduction to differential geometry.
+
+COMMENT: Sure.
+
+It is also better to give some examples of strongly-convex sets and provide some potential applications of the method under this assumption. Clearly, a Euclidean ball is a strongly convex set, yet besides this example, it seems that there are not many decision sets/constraint sets in machine learning that satisfy the strongly-convex property.
+
+COMMENT: ell^p-norms, vector-matrix case.
+
+Perhaps the authors can discuss this issue in greater length, as it looks like the assumption is somewhat contrived.
+
+Another concern is about the assumption in Section 4.1, which considers the constraint set that is the Euclidean ball. The result would be stronger if it can be generalized to p norm ball that is still strongly-convex (e.g. p=(1,2]), instead of the Euclidean ball only. Or, maybe the main difficulty of avoiding the generalization should be described.
+
+COMMENT: We are out of ideas. Great open problem.
+
+Minor issues:
+1) On second line of Section 2:  “In round every round”
+2) In the last equation of page 8 (Weingarten Map), is there a typo in the term that is right on lhs of the last equality?
+3) Example 2 is difficult to read. Perhaps the authors can elaborate further.
